@@ -3,7 +3,7 @@
  */
 /* 原点 */
 var root_x = 1;
-var root_y = 30;
+var root_y = 40;
 /* グリッドのサイズ */
 var GRID_WIDTH = 20;
 var GRID_HEIGHT = 20;
@@ -33,8 +33,7 @@ window.addEventListener('DOMContentLoaded',
       // lines はいらないかも（グラフ長は標準工期などの長い方で算出するようになったため）
       var data = 
     	  {
-//    		  "earliestWorkPeriodSlim": 8.39,	// 最短開発期間（月）SLIM
-    		  "earliestWorkPeriodSlim": 8.25,	// 最短開発期間（月）SLIM
+    		  "earliestWorkPeriodSlim": 8.39,	// 最短開発期間（月）SLIM
     	   	  "standardWorkPeriodJuas": 7.7,	// 標準工期（月）JUAS
     		  "maxPeriod": 8.39,				// グラフの最大期間（月）
     	   	  "maxManHourMonth": 7.7,			// グラフ内で最大の人月
@@ -101,10 +100,12 @@ window.addEventListener('DOMContentLoaded',
       
 
 		// 最短開発期間を描画
-      	drawTermLine(c, data.earliestWorkPeriodSlim, [255, 128, 0]);
+      	drawTermLine(c, data.earliestWorkPeriodSlim, [255, 0, 0], 0,
+      			Math.round(data.earliestWorkPeriodSlim * 10) / 10 + "ヶ月");
 
       	// 標準工期を描画
-      	drawTermLine(c, data.standardWorkPeriodJuas, [255, 0, 0]);
+      	drawTermLine(c, data.standardWorkPeriodJuas, [255, 128, 0], 17,
+      			Math.round(data.standardWorkPeriodJuas * 10) / 10 + "ヶ月");
 
     }
   }
@@ -154,9 +155,10 @@ function drawEstimateData(c, data) {
 }
 
 /**
+ * グラデーションの配色情報JSON の内容をグラデーション情報インスタンスに反映する
  * 
- * @param grad
- * @param gradColorJson 
+ * @param grad グラデーション情報インスタンス
+ * @param gradColorJson グラデーションの配色情報JSON
  */
 function setGradationColor(grad, gradColorJson) {
 
@@ -254,7 +256,7 @@ function drawScale(c) {
 	cScale.lineWidth = 0.5;
 
 	// グラフ目盛りを描画
-	for (var i=5 ; i <= GRAPH_GRID_Y_NUM ; i += 5){
+	for (var i=0 ; i <= GRAPH_GRID_Y_NUM ; i += 5){
 		cScale.beginPath();
 		var ManHourText = (grid_unit * i) + "人月";
 		cScale.strokeText(ManHourText, graph_root_x + scale_width - 3, 
@@ -264,23 +266,91 @@ function drawScale(c) {
 }
 
 /**
- * 
- * @param c
- * @param period
- * @param rgbArr
+ * 期間線を描画する
+ * @param c Canvasコンテキスト
+ * @param period 月数
+ * @param rgbArr [R,G,B]形式の配列で表現した線の色
+ * @param lengthOffset 期間線の長さオフセット(＋値:長く、ー値:短く)
+ * @param caption 期間線の名前
  */
-function drawTermLine(c, period, rgbArr) {
-
+function drawTermLine(c, period, rgbArr, lengthOffset, caption) {
+	c.save();
+	
 	// 「▼」の高さ
 	var turnTriHeight = GRID_HEIGHT - 5;
 
 	// 線のルート(「▼」の左上の原点)
 	var lineRootX = graph_root_x + (period * GRID_WIDTH * 4) - GRID_WIDTH/2;
-	var lineRootY = graph_root_y - graph_y_length - turnTriHeight;
+	var lineRootY = graph_root_y - graph_y_length - turnTriHeight - lengthOffset;
+	
+	// 期間線の影を描画
+	var shadowRgbArr = [128, 128, 128];
+	var colorDecay = 0.8;
+	var gradColorJson =
+		[
+		 {"ratio":0,	"rgb":[255, 255, 255]},
+		 {"ratio":0.2,	"rgb":[shadowRgbArr[0], shadowRgbArr[1], shadowRgbArr[2]]},
+		 {"ratio":1,	"rgb":[Math.round(shadowRgbArr[0]*colorDecay), 
+		              	       Math.round(shadowRgbArr[1]*colorDecay), 
+		              	       Math.round(shadowRgbArr[2]*colorDecay)]}
+		];
+	var putLineOptionJson = {"shiftPoint": 3.5, "doWriteBorder":false };
+	putPartOfTermLine(c, [lineRootX, lineRootY],
+			gradColorJson, turnTriHeight, putLineOptionJson);
+
+	// 期間線の本体を描画
+	colorDecay = 1.5;
+	gradColorJson =
+		[
+		 {"ratio":0,		"rgb":[255, 255, 255]},
+		 {"ratio":0.1,		"rgb":[Math.round(rgbArr[0]*colorDecay), 
+		              		       Math.round(rgbArr[1]*colorDecay), 
+		              		       Math.round(rgbArr[2]*colorDecay)]},
+		 {"ratio":0.9,	"rgb":[rgbArr[0], rgbArr[1], rgbArr[2]]}
+		];
+	putPartOfTermLine(c, [lineRootX, lineRootY], gradColorJson, turnTriHeight);
+	
+	// キャプションを描画
+	c.font = "15px 'Monospace'";
+	c.strokeStyle = "rgb(" + rgbArr[0] + ", " + rgbArr[1] + ", " + rgbArr[2] + ")";
+	c.textAlign = "left";
+	c.lineWidth = 1;
+	c.beginPath();
+	c.strokeText(caption, lineRootX + GRID_WIDTH + 5, lineRootY + turnTriHeight - 3);
+	c.closePath();
+
+	c.restore();
+}
+
+/**
+ * 期間線を描画する。
+ * 図形描画と塗りつぶしのみで、影の設定は行わない。
+ * 
+ * @param c Canvasコンテキスト
+ * @param lineRoot 線のルート(「▼」の左上の原点)の[x, y]形式の配列
+ * @param gradColorJson グラデーションの配色情報JSON
+ * @param turnTriHeight 「▼」の高さ
+ * @param option 描画オプション(任意)
+ */
+function putPartOfTermLine(c, lineRoot, gradColorJson, turnTriHeight, option) {
+
+	// 線描画の原点を設定する（ずらしオプションがあれば反映する）
+	var lineRootX,lineRootY;
+	if (option == undefined || option.shiftPoint == undefined) {
+		lineRootX = lineRoot[0];
+		lineRootY = lineRoot[1];
+	} else {
+		lineRootX = lineRoot[0] + option.shiftPoint;
+		lineRootY = lineRoot[1] + option.shiftPoint;
+	}
+	
+	// 「▼」の高さ
+	var turnTriHeight = GRID_HEIGHT - 5;
 
 	// 「▼」から「｜」の長さを省いた方辺の長さ
 	var lineWidth = 4;
 	var withoutLineWidthHalf = (GRID_WIDTH - lineWidth) / 2;
+	
 	// 線の描画(ルート, →, ↓←, ↓, ←, ↑, ←↑の順)
     c.lineWidth = 2;
 	c.beginPath();
@@ -291,17 +361,12 @@ function drawTermLine(c, period, rgbArr) {
     c.lineTo(lineRootX + withoutLineWidthHalf, graph_root_y);
     c.lineTo(lineRootX + withoutLineWidthHalf, lineRootY + turnTriHeight);
     c.lineTo(lineRootX, lineRootY);
-    c.stroke();
 
-	var colorDecay = 1.5;
-	var gradColorJson =
-		[
-		 {"ratio":0,		"rgb":[255, 255, 255]},
-		 {"ratio":0.1,		"rgb":[Math.round(rgbArr[0]*colorDecay), 
-		              		       Math.round(rgbArr[1]*colorDecay), 
-		              		       Math.round(rgbArr[2]*colorDecay)]},
-		 {"ratio":0.9,	"rgb":[rgbArr[0], rgbArr[1], rgbArr[2]]},
-		];
+    // 境界線を描画する（オプションで非描画が指定されていなければ）
+    if ( option == undefined || option.doWriteBorder ) {
+        c.stroke();
+    }
+    // グラデーションで塗りつぶす
     var grad  = c.createLinearGradient(lineRootX, lineRootY,
     		lineRootX + GRID_WIDTH * 2, graph_root_y);
     c.fillStyle = setGradationColor(grad, gradColorJson);

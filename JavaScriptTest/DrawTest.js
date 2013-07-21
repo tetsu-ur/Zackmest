@@ -42,25 +42,25 @@ window.addEventListener('DOMContentLoaded',
 	    		  "workPeriod": 1.1,		// 工期
 	    		  "manHourProcess": 3.2, 	// 工数（工程）
 	    		  "manHourMonth": 2.9, 		// 工数（月あたり）
-	    		  "gridColor": [255, 0, 0],
+	    		  "gridColor": [255, 64, 64],
 	    		  "lines": 4,
-	    		  "estimate":[ 8, 3, 3, 3]
+	    		  "estimate":[ 3, 3, 3, 3]
 	    	  },
 	    	  {
 	    		  "workPeriod": 1.5,
 	    		  "manHourProcess": 8.6, 
 	    		  "manHourMonth": 5.7, 
-	    		  "gridColor": [255, 255, 0],
+	    		  "gridColor": [255, 255, 64],
 	    		  "lines": 6,
-	    		  "estimate":[ 7, 6, 6, 6, 6, 6]
+	    		  "estimate":[ 6, 6, 6, 6, 6, 6]
 	    	  },
 	    	  {
 	    		  "workPeriod": 1.8,
 	    		  "manHourProcess": 13.8, 
 	    		  "manHourMonth": 7.7, 
-	    		  "gridColor": [0, 255, 0],
+	    		  "gridColor": [64, 255, 64],
 	    		  "lines": 7,
-	    		  "estimate":[ 9, 8, 8, 8, 8, 8, 8]
+	    		  "estimate":[ 8, 8, 8, 8, 8, 8, 8]
 	    	  },
 		      {
 	    		  "workPeriod": 1.6,
@@ -68,7 +68,7 @@ window.addEventListener('DOMContentLoaded',
 	    		  "manHourMonth": 4.9, 
 	       		  "gridColor": [96, 96, 255],
 	       		  "lines": 6,
-	       		  "estimate":[ 10, 5, 5, 5, 5]
+	       		  "estimate":[ 5, 5, 5, 5, 5]
 	    	  },
 		      {
 	    		  "workPeriod": 1.6,
@@ -85,6 +85,14 @@ window.addEventListener('DOMContentLoaded',
 	       		  "gridColor": [96, 255, 96],
 	       		  "lines": 2,
 	       		  "estimate":[ 5, 5]
+	    	  },
+		      {
+	    		  "workPeriod": 1.6,
+	    		  "manHourProcess": 7.8, 
+	    		  "manHourMonth": 4.9, 
+	       		  "gridColor": [128, 255, 128],
+	       		  "lines": 2,
+	       		  "estimate":[ 9, 9]
 	    	  }]
     	  };
 
@@ -116,16 +124,17 @@ window.addEventListener('DOMContentLoaded',
       
 
 		// 最短開発期間を描画
-      	drawTermLine(c, data.earliestWorkPeriodSlim, [255, 0, 0], 0,
+      	drawTermLine(c, data.earliestWorkPeriodSlim, [255, 0, 0], 5,
       			Math.round(data.earliestWorkPeriodSlim * 10) / 10 + "ヶ月");
 
       	// 標準工期を描画
-      	drawTermLine(c, data.standardWorkPeriodJuas, [255, 128, 0], 17,
+      	drawTermLine(c, data.standardWorkPeriodJuas, [255, 128, 0], 22,
       			Math.round(data.standardWorkPeriodJuas * 10) / 10 + "ヶ月");
 
 
     	// 工程のキャプションを描画
       	var passedTimeLine = 0;
+      	// キャプションの描画位置の配列
       	var captionArr = new Array();
     	// 描画するキャプションの情報を作成して配列に格納する
         for (var i in data.graphData) {
@@ -137,22 +146,22 @@ window.addEventListener('DOMContentLoaded',
         	if ( numberOfChara < String(data.graphData[i].workPeriod).length )
         		numberOfChara = String(data.graphData[i].workPeriod.length);
 
+        	// グリッドの原点からずらすオフセット
         	var posOffset = [10, -10];
         	// キャプション(X座標)…工程の最初のグリッドのルート
         	var captionRootX = graph_root_x + passedTimeLine * GRID_WIDTH;
         	// キャプション(Y座標)…工程の人月の上部のグリッドのルート
         	var captionRootY = graph_root_y - data.graphData[i].estimate[0] * GRID_HEIGHT;
-        	
+        	// 工程毎キャプション情報
         	var processData =
         		{
-        			"position": [captionRootX + posOffset[0], captionRootY + posOffset[1]],
+        			"captionPosition": [captionRootX + posOffset[0], captionRootY + posOffset[1]], // キャプションの描画開始座標
         			"captionManHour": captionManHour,
         			"captionWorkPeriod": captionWorkPeriod,
         			"color": data.graphData[i].gridColor,
-        			"captionSizeX": [0, 0],
-					"captionSizeY": [0, 0],
-					// キャプションの数値部の文字数
-					"numberOfChara": numberOfChara
+        			"captionSizeX": [0, 0], // キャプションパネルのX座標の From 〜 To (後で設定)
+					"captionSizeY": [0, 0], // キャプションパネルのY座標の From 〜 To (後で設定)
+					"numberOfChara": numberOfChara // キャプションの数値部の文字数
         		};
         	captionArr.push(processData);
 
@@ -166,13 +175,15 @@ window.addEventListener('DOMContentLoaded',
         	var fontWidth = 12;
         	var panelSize = [fontWidth / 2 * (2 * 5 + captionArr[i].numberOfChara), fontWidth * 2 ];
         	var panelPadding = 4; 
-        	var captionX = captionArr[i].position[0];
-        	var captionY = captionArr[i].position[1];
+        	var captionX = captionArr[i].captionPosition[0];
+        	var captionY = captionArr[i].captionPosition[1];
 
+        	// キャプションの描画位置を基にキャプションパネルの描画位置を設定する
         	captionArr[i].captionSizeX[0] = captionX - panelPadding;
         	captionArr[i].captionSizeX[1] = captionX + panelSize[0] + panelPadding;
         	captionArr[i].captionSizeY[0] = captionY - panelSize[1] - panelPadding;
         	captionArr[i].captionSizeY[1] = captionY + panelPadding;
+			var panelHeight = captionArr[i].captionSizeY[1] - captionArr[i].captionSizeY[0];
 
         	// 前工程のキャプションと位置がかぶる場合にはY座標をずらす
         	if ( i > 0 ) {
@@ -180,78 +191,198 @@ window.addEventListener('DOMContentLoaded',
         		// ずらしたY座標の位置を格納 [始点, 終点]
         		var realocatePositionY = [0, 0];
         		
+        		// 前工程のキャプションとどれだけずらすか(px)
         		var shiftOffset = 10;
         		var prevCap = captionArr[i - 1];
 
-//            	alert("前回Y : " + prevCap.captionSizeY[0] + " - " + prevCap.captionSizeY[1] + "\n" +
-//            			"今回Y : " + captionArr[i].captionSizeY[0] + " - " + captionArr[i].captionSizeY[1]);
-
-        		// X座標がかぶっていて、Y軸もかぶっているか
-        		if (prevCap.captionSizeX[1] > captionArr[i].captionSizeX[0]
-        			// 前回の上辺〜底辺の間に今回のキャプションの上辺がある
-        		 	&& ((prevCap.captionSizeY[1] > captionArr[i].captionSizeY[0]) &&
-        		 		(prevCap.captionSizeY[0] < captionArr[i].captionSizeY[0])
-        		 		// 前回の上辺〜底辺の間に今回のキャプションの低辺がある
-        		 		|| 
-        		 		(prevCap.captionSizeY[1] > captionArr[i].captionSizeY[1]) &&
-        		 		 prevCap.captionSizeY[0] < captionArr[i].captionSizeY[1])
-        		 		||
-        		 		// 前行程のキャプションと同じ高さにある
-        		 		(prevCap.captionSizeY[1] == captionArr[i].captionSizeY[1])) {
-
-        			var panelHeight = captionArr[i].captionSizeY[1] - captionArr[i].captionSizeY[0];
-//        			var shiftHeight = captionArr[i].captionSizeY[1] - prevCap.captionSizeY[0];
+        		// 前工程のキャプションパネルと描画位置がかぶっているかを判定する
+        		if (isOverlapCaption(prevCap.captionSizeX, prevCap.captionSizeY,
+        				captionArr[i].captionSizeX, captionArr[i].captionSizeY)) {
+        			
+        			// 前工程のキャプションパネルの上方向に表示する座標を算出する
         			realocatePositionY[0] = prevCap.captionSizeY[0] - panelHeight - shiftOffset;
         			realocatePositionY[1] = prevCap.captionSizeY[0] - shiftOffset;
 
         			// グラフから上にはみ出るかを判定する
-        			if (root_y > realocatePositionY[1]) {
+        			if (root_y > realocatePositionY[0]) {
 
         				// グラフから上にはみ出る場合には前キャプションより下にシフトする
         				captionArr[i].captionSizeY[0] = prevCap.captionSizeY[1] + shiftOffset;
         				captionArr[i].captionSizeY[1] = captionArr[i].captionSizeY[0] + panelHeight;
-//        				captionArr[i].captionSizeY[1] = captionArr[i].captionSizeY[0] + shiftHeight;
-            			captionY = captionArr[i].captionSizeY[0] + panelHeight - panelPadding;
+        				captionArr[i].captionPosition[1] = captionArr[i].captionSizeY[0] + panelHeight - panelPadding;
         			} else {
         				// グラフから上にはみ出なければそのまま
         				captionArr[i].captionSizeY[0] = realocatePositionY[0];
         				captionArr[i].captionSizeY[1] = realocatePositionY[1];
-            			captionY = realocatePositionY[1]  - panelPadding;
+        				captionArr[i].captionPosition[1] = realocatePositionY[1]  - panelPadding;
         			}
+        		} else {
+        			// グラフよりも上にはみ出るかを判定する
+            		// リアロケートした結果かぶる場合もあるので考慮が必要
+        			if (root_y > captionArr[i].captionSizeY[0]) {
 
-        			
+                		// ずらしたY座標の位置を格納 [始点, 終点]
+                		var realocatePositionY = [0, 0];
+
+                		// 上にはみ出ないような座標を再設定
+            			realocatePositionY[0] = root_y + shiftOffset;
+            			realocatePositionY[1] = realocatePositionY[0] + panelHeight;
+
+                		// 前工程のキャプションパネルと描画位置がかぶっているかを判定する
+                		if (isOverlapCaption(prevCap.captionSizeX, prevCap.captionSizeY,
+                				captionArr[i].captionSizeX, realocatePositionY)) {
+
+            				// 前キャプションより下にシフトする
+            				captionArr[i].captionSizeY[0] = prevCap.captionSizeY[1] + shiftOffset;
+            				captionArr[i].captionSizeY[1] = captionArr[i].captionSizeY[0] + panelHeight;
+            				captionArr[i].captionPosition[1] = captionArr[i].captionSizeY[0] + panelHeight - panelPadding;
+                		} else {
+                			// 単純にグラフから上にはみ出ない座標を設定する
+                			captionArr[i].captionSizeY[0] = realocatePositionY[0];
+            				captionArr[i].captionSizeY[1] = realocatePositionY[1];
+            				captionArr[i].captionPosition[1] = realocatePositionY[1]  - panelPadding;
+                		}
+            			
+        			}
         		}
+
+        	} else {
+        		// 初回も一応考慮が必要
+
         	}
-        	
-//        	alert("X : " + captionArr[i].captionSizeX[0] + " - " + captionArr[i].captionSizeX[1] + "\n" +
-//        		  "Y : " + captionArr[i].captionSizeY[0] + " - " + captionArr[i].captionSizeY[1] + "\n");
-        	c.beginPath();
-        	c.lineWidth = 1;
-        	c.strokeStyle = "rgb( 0, 0 , 0)";
-        	c.rect(captionArr[i].captionSizeX[0] , captionArr[i].captionSizeY[0],
-        			captionArr[i].captionSizeX[1] - captionArr[i].captionSizeX[0], 
-        			captionArr[i].captionSizeY[1] - captionArr[i].captionSizeY[0] );
-        	c.fill();
-        	c.stroke();
-        	c.closePath();
-        	
-        	c.beginPath();
-        	c.font = fontWidth + "px 'Monospace'";
-        	c.strokeStyle = "rgb(0, 0, 0)";
-        	c.textAlign = "left";
-        	c.lineWidth = 0.5;
-        	c.strokeText(captionArr[i].captionWorkPeriod, captionX, captionY);
-        	c.strokeText(captionArr[i].captionManHour, captionX, captionY - 15);
-        	c.closePath();
 
+        	// キャプションパネルとキャプションを描画する
+        	drawCaptionSet(c, captionArr[i], fontWidth);
         }
-
-        
-    	// キャプションを描画
 
     }
   }
 );
+
+/**
+ * キャプションパネルとキャプションを描画する
+ * 
+ * @param c Canvasコンテキスト
+ * @param captionInfo 工程毎キャプション情報
+ * @param fontWidth キャプションのフォントサイズ
+ */
+function drawCaptionSet(c, captionInfo, fontWidth) {
+
+	// キャプションパネルの影を描画
+	var gradColorJson =
+		[
+		 {"ratio":0.3,	"rgb":[255, 255, 255]},
+		 {"ratio":1,	"rgb":[96, 96, 96]},
+		];
+	var putPanelOption = {"shiftPoint": 4, "doWriteBorder":false, "transparent":0.5 };
+	drawCaptionPanel(c, captionInfo, gradColorJson, putPanelOption);
+
+	// キャプションパネルを描画
+	rgbArr = captionInfo.color;
+	var colorDecay = 255 / 2.0;
+	gradColorJson =
+		[
+		 {"ratio":0.3,	"rgb":[255, 255, 255]},
+		 {"ratio":1,	"rgb":[Math.round(rgbArr[0]+colorDecay), 
+				 			   Math.round(rgbArr[1]+colorDecay), 
+				 			   Math.round(rgbArr[2]+colorDecay)]},
+		];
+	drawCaptionPanel(c, captionInfo, gradColorJson);
+	
+	// キャプションを描画
+	c.beginPath();
+	c.font = fontWidth + "px 'Monospace'";
+	c.strokeStyle = "rgb(0, 0, 0)";
+	c.textAlign = "left";
+	c.lineWidth = 0.5;
+	c.strokeText(captionInfo.captionWorkPeriod, captionInfo.captionPosition[0], captionInfo.captionPosition[1]);
+	c.strokeText(captionInfo.captionManHour, captionInfo.captionPosition[0], captionInfo.captionPosition[1] - 15);
+	c.closePath();
+
+}
+
+/**
+ * キャプションパネルを描画する。
+ * キャプション文字や影の描画はここでは行わない。
+ * 
+ * @param c Canvasコンテキスト
+ * @param captionInfo 工程毎キャプション情報
+ * @param gradColorJson グラデーションの配色情報JSON
+ * @param putPanelOption 描画オプション(任意)
+ */
+function drawCaptionPanel(c, captionInfo, gradColorJson, putPanelOption) {
+	c.save();
+//	alert("グラデーション範囲 : (" + panelPosition.captionSizeX[0] + ", " + panelPosition.captionSizeY[0] + ") 〜 (" +
+//			panelPosition.captionSizeX[1] + ", " + panelPosition.captionSizeY[1] + ")\n");
+
+	// キャプションパネル描画の原点を設定する（ずらしオプションがあれば反映する）
+	var offset;
+	if (putPanelOption == undefined || putPanelOption.shiftPoint == undefined) {
+		offset = 0;
+	} else {
+		offset = putPanelOption.shiftPoint;
+	}
+
+	// 起点と終点の座標にオフセットを反映 (x, y) 
+	rootPosision = [captionInfo.captionSizeX[0] + offset, 
+	                captionInfo.captionSizeY[0] + offset];
+	destPosition = [captionInfo.captionSizeX[1] + offset,
+	                captionInfo.captionSizeY[1] + offset];
+
+	// キャプションパネル描画
+	c.beginPath();
+	var grad  = c.createLinearGradient(rootPosision[0], rootPosision[1],
+										destPosition[0], destPosition[1]);
+
+    // オプションで透過が指定されていたら反映する
+	if (putPanelOption != undefined && putPanelOption.transparent != undefined) {
+		c.globalAlpha = putPanelOption.transparent;
+	}
+	c.fillStyle = setGradationColor(grad, gradColorJson);
+	c.lineWidth = 1;
+	c.strokeStyle = "rgb( 0, 0 , 0)";
+	c.rect(rootPosision[0] , rootPosision[1],
+			destPosition[0] - rootPosision[0], 
+			destPosition[1] - rootPosision[1]);
+	c.fill();
+    // 境界線を描画する（オプションで非描画が指定されていなければ）
+    if ( putPanelOption == undefined || putPanelOption.doWriteBorder ) {
+    	c.stroke();
+    }
+	c.closePath();
+
+	c.restore();
+}
+
+/**
+ * ２つのキャプションパネルの描画位置がかぶっているかを判定する
+ * 
+ * @param prevCaptionX 前工程のキャプション位置(X座標)
+ * @param prevCaptionY 前工程のキャプション位置(Y座標)
+ * @param curCaptionX 今工程のキャプション位置(X座標)
+ * @param curCaptionY 今工程のキャプション位置(Y座標)
+ * @returns {Boolean} かぶっているか
+ */
+function isOverlapCaption(
+		prevCaptionX, prevCaptionY, curCaptionX, curCaptionY) {
+
+//	alert("前回 : (" + prevCaptionX[0] + ", " + prevCaptionY[0] + ") 〜 (" +
+//			prevCaptionX[1] + ", " + prevCaptionY[1] + ")\n" +
+//			"今回 : (" + curCaptionX[0] + ", " + curCaptionY[0] + ") 〜 (" +
+//			curCaptionX[1] + ", " + curCaptionY[1] + ")\n");
+
+	// X座標がかぶっていて、Y軸もかぶっているか
+	return (prevCaptionX[1] > curCaptionX[0]
+	
+		// 前回の上辺〜底辺の間に今回のキャプションの上辺がある
+		&& ((prevCaptionY[1] > curCaptionY[0] && prevCaptionY[0] < curCaptionY[0])
+			// 前回の上辺〜底辺の間に今回のキャプションの低辺がある
+			|| 
+			(prevCaptionY[1] > curCaptionY[1] && prevCaptionY[0] < curCaptionY[1])
+			||
+			// 前行程のキャプションと同じ高さにある
+			(prevCaptionY[1] == curCaptionY[1])));
+}
 
 /**
  * グラフにデータを描画する
@@ -429,7 +560,7 @@ function drawTermLine(c, period, rgbArr, lengthOffset, caption) {
 	var lineRootY = graph_root_y - graph_y_length - turnTriHeight - lengthOffset;
 	
 	// 期間線の影を描画
-	var shadowRgbArr = [128, 128, 128];
+	var shadowRgbArr = [96, 96, 96];
 	var colorDecay = 0.8;
 	var gradColorJson =
 		[
@@ -439,7 +570,7 @@ function drawTermLine(c, period, rgbArr, lengthOffset, caption) {
 		              	       Math.round(shadowRgbArr[1]*colorDecay), 
 		              	       Math.round(shadowRgbArr[2]*colorDecay)]}
 		];
-	var putLineOptionJson = {"shiftPoint": 3.5, "doWriteBorder":false };
+	var putLineOptionJson = {"shiftPoint": 4, "doWriteBorder":false, "transparent":0.5 };
 	putPartOfTermLine(c, [lineRootX, lineRootY],
 			gradColorJson, turnTriHeight, putLineOptionJson);
 
@@ -478,7 +609,8 @@ function drawTermLine(c, period, rgbArr, lengthOffset, caption) {
  * @param option 描画オプション(任意)
  */
 function putPartOfTermLine(c, lineRoot, gradColorJson, turnTriHeight, option) {
-
+	c.save();
+	
 	// 線描画の原点を設定する（ずらしオプションがあれば反映する）
 	var lineRootX,lineRootY;
 	if (option == undefined || option.shiftPoint == undefined) {
@@ -507,6 +639,10 @@ function putPartOfTermLine(c, lineRoot, gradColorJson, turnTriHeight, option) {
     c.lineTo(lineRootX + withoutLineWidthHalf, lineRootY + turnTriHeight);
     c.lineTo(lineRootX, lineRootY);
 
+    // オプションで透過が指定されていたら反映する
+	if (option != undefined && option.transparent != undefined) {
+		c.globalAlpha = option.transparent;
+	}
     // 境界線を描画する（オプションで非描画が指定されていなければ）
     if ( option == undefined || option.doWriteBorder ) {
         c.stroke();
@@ -517,4 +653,6 @@ function putPartOfTermLine(c, lineRoot, gradColorJson, turnTriHeight, option) {
     c.fillStyle = setGradationColor(grad, gradColorJson);
     c.fill();
 	c.closePath();
+
+	c.restore();
 }

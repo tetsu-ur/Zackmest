@@ -34,7 +34,8 @@ window.addEventListener('DOMContentLoaded',
       var data = 
     	  {
     		  "earliestWorkPeriodSlim": 8.39,	// 最短開発期間（月）SLIM
-    	   	  "standardWorkPeriodJuas": 7.7,	// 標準工期（月）JUAS
+    	   	  "standardWorkPeriodJuas": 3.3,	// 標準工期（月）JUAS
+//    	   	  "standardWorkPeriodJuas": 7.7,	// 標準工期（月）JUAS
     		  "maxPeriod": 8.39,				// グラフの最大期間（月）
     	   	  "maxManHourMonth": 7.7,			// グラフ内で最大の人月
     	   	  "graphData":
@@ -92,7 +93,7 @@ window.addEventListener('DOMContentLoaded',
 	    		  "manHourMonth": 4.9, 
 	       		  "gridColor": [128, 255, 128],
 	       		  "lines": 2,
-	       		  "estimate":[ 9, 9]
+	       		  "estimate":[ 1, 1]
 	    	  }]
     	  };
 
@@ -131,136 +132,167 @@ window.addEventListener('DOMContentLoaded',
       	drawTermLine(c, data.standardWorkPeriodJuas, [255, 128, 0], 22,
       			Math.round(data.standardWorkPeriodJuas * 10) / 10 + "ヶ月");
 
+      	// 全工程分のキャプションの情報を作成する
+      	var captionInfos = createCaptionInfos(data);
 
-    	// 工程のキャプションを描画
-      	var passedTimeLine = 0;
-      	// キャプションの描画位置の配列
-      	var captionArr = new Array();
-    	// 描画するキャプションの情報を作成して配列に格納する
-        for (var i in data.graphData) {
-        	var captionManHour = "工数：" + data.graphData[i].manHourProcess + "人月";
-        	var captionWorkPeriod = "期間：" + data.graphData[i].workPeriod + "ヶ月";
-
-        	// 数値部はデータによって桁数が変わるので最大文字数を算出
-        	var numberOfChara = String(data.graphData[i].manHourProcess).length;
-        	if ( numberOfChara < String(data.graphData[i].workPeriod).length )
-        		numberOfChara = String(data.graphData[i].workPeriod.length);
-
-        	// グリッドの原点からずらすオフセット
-        	var posOffset = [10, -10];
-        	// キャプション(X座標)…工程の最初のグリッドのルート
-        	var captionRootX = graph_root_x + passedTimeLine * GRID_WIDTH;
-        	// キャプション(Y座標)…工程の人月の上部のグリッドのルート
-        	var captionRootY = graph_root_y - data.graphData[i].estimate[0] * GRID_HEIGHT;
-        	// 工程毎キャプション情報
-        	var processData =
-        		{
-        			"captionPosition": [captionRootX + posOffset[0], captionRootY + posOffset[1]], // キャプションの描画開始座標
-        			"captionManHour": captionManHour,
-        			"captionWorkPeriod": captionWorkPeriod,
-        			"color": data.graphData[i].gridColor,
-        			"captionSizeX": [0, 0], // キャプションパネルのX座標の From 〜 To (後で設定)
-					"captionSizeY": [0, 0], // キャプションパネルのY座標の From 〜 To (後で設定)
-					"numberOfChara": numberOfChara // キャプションの数値部の文字数
-        		};
-        	captionArr.push(processData);
-
-        	// 次工程のキャプション位置を設定
-        	passedTimeLine += data.graphData[i].estimate.length;
-        }
-
-        for (var i in captionArr) {
-
-        	// キャプションを描画
-        	var fontWidth = 12;
-        	var panelSize = [fontWidth / 2 * (2 * 5 + captionArr[i].numberOfChara), fontWidth * 2 ];
-        	var panelPadding = 4; 
-        	var captionX = captionArr[i].captionPosition[0];
-        	var captionY = captionArr[i].captionPosition[1];
-
-        	// キャプションの描画位置を基にキャプションパネルの描画位置を設定する
-        	captionArr[i].captionSizeX[0] = captionX - panelPadding;
-        	captionArr[i].captionSizeX[1] = captionX + panelSize[0] + panelPadding;
-        	captionArr[i].captionSizeY[0] = captionY - panelSize[1] - panelPadding;
-        	captionArr[i].captionSizeY[1] = captionY + panelPadding;
-			var panelHeight = captionArr[i].captionSizeY[1] - captionArr[i].captionSizeY[0];
-
-        	// 前工程のキャプションと位置がかぶる場合にはY座標をずらす
-        	if ( i > 0 ) {
-
-        		// ずらしたY座標の位置を格納 [始点, 終点]
-        		var realocatePositionY = [0, 0];
-        		
-        		// 前工程のキャプションとどれだけずらすか(px)
-        		var shiftOffset = 10;
-        		var prevCap = captionArr[i - 1];
-
-        		// 前工程のキャプションパネルと描画位置がかぶっているかを判定する
-        		if (isOverlapCaption(prevCap.captionSizeX, prevCap.captionSizeY,
-        				captionArr[i].captionSizeX, captionArr[i].captionSizeY)) {
-        			
-        			// 前工程のキャプションパネルの上方向に表示する座標を算出する
-        			realocatePositionY[0] = prevCap.captionSizeY[0] - panelHeight - shiftOffset;
-        			realocatePositionY[1] = prevCap.captionSizeY[0] - shiftOffset;
-
-        			// グラフから上にはみ出るかを判定する
-        			if (root_y > realocatePositionY[0]) {
-
-        				// グラフから上にはみ出る場合には前キャプションより下にシフトする
-        				captionArr[i].captionSizeY[0] = prevCap.captionSizeY[1] + shiftOffset;
-        				captionArr[i].captionSizeY[1] = captionArr[i].captionSizeY[0] + panelHeight;
-        				captionArr[i].captionPosition[1] = captionArr[i].captionSizeY[0] + panelHeight - panelPadding;
-        			} else {
-        				// グラフから上にはみ出なければそのまま
-        				captionArr[i].captionSizeY[0] = realocatePositionY[0];
-        				captionArr[i].captionSizeY[1] = realocatePositionY[1];
-        				captionArr[i].captionPosition[1] = realocatePositionY[1]  - panelPadding;
-        			}
-        		} else {
-        			// グラフよりも上にはみ出るかを判定する
-            		// リアロケートした結果かぶる場合もあるので考慮が必要
-        			if (root_y > captionArr[i].captionSizeY[0]) {
-
-                		// ずらしたY座標の位置を格納 [始点, 終点]
-                		var realocatePositionY = [0, 0];
-
-                		// 上にはみ出ないような座標を再設定
-            			realocatePositionY[0] = root_y + shiftOffset;
-            			realocatePositionY[1] = realocatePositionY[0] + panelHeight;
-
-                		// 前工程のキャプションパネルと描画位置がかぶっているかを判定する
-                		if (isOverlapCaption(prevCap.captionSizeX, prevCap.captionSizeY,
-                				captionArr[i].captionSizeX, realocatePositionY)) {
-
-            				// 前キャプションより下にシフトする
-            				captionArr[i].captionSizeY[0] = prevCap.captionSizeY[1] + shiftOffset;
-            				captionArr[i].captionSizeY[1] = captionArr[i].captionSizeY[0] + panelHeight;
-            				captionArr[i].captionPosition[1] = captionArr[i].captionSizeY[0] + panelHeight - panelPadding;
-                		} else {
-                			// 単純にグラフから上にはみ出ない座標を設定する
-                			captionArr[i].captionSizeY[0] = realocatePositionY[0];
-            				captionArr[i].captionSizeY[1] = realocatePositionY[1];
-            				captionArr[i].captionPosition[1] = realocatePositionY[1]  - panelPadding;
-                		}
-            			
-        			}
-        		}
-
-        	} else {
-        		// 初回も一応考慮が必要
-
-        	}
-
-        	// キャプションパネルとキャプションを描画する
-        	drawCaptionSet(c, captionArr[i], fontWidth);
-        }
+        // 全工程分のキャプションを描画する
+        drawCaptionAll(c, captionInfos);
 
     }
   }
 );
 
 /**
- * キャプションパネルとキャプションを描画する
+ * 全工程の工程毎キャプション情報の配列を作成する。<br />
+ * キャプションパネルの描画座標はここでは設定しない。
+ * 
+ * @param data 見積り情報JSON
+ * @returns {Array} 工程毎キャプション情報の配列
+ */
+function createCaptionInfos(data) {
+
+	// 工程のキャプションを描画
+  	var passedTimeLine = 0;
+  	// キャプションの描画位置の配列
+  	var captionArr = new Array();
+	// 描画するキャプションの情報を作成して配列に格納する
+    for (var i in data.graphData) {
+    	var captionManHour = "工数：" + data.graphData[i].manHourProcess + "人月";
+    	var captionWorkPeriod = "期間：" + data.graphData[i].workPeriod + "ヶ月";
+
+    	// 数値部はデータによって桁数が変わるので最大文字数を算出
+    	var numberOfChara = String(data.graphData[i].manHourProcess).length;
+    	if ( numberOfChara < String(data.graphData[i].workPeriod).length )
+    		numberOfChara = String(data.graphData[i].workPeriod.length);
+
+    	// グリッドの原点からずらすオフセット
+    	var posOffset = [10, -10];
+    	// キャプション(X座標)…工程の最初のグリッドのルート
+    	var captionRootX = graph_root_x + passedTimeLine * GRID_WIDTH;
+    	// キャプション(Y座標)…工程の人月の上部のグリッドのルート
+    	var captionRootY = graph_root_y - Math.ceil(data.graphData[i].estimate[0] / grid_unit) * GRID_HEIGHT ;
+    	// 工程毎キャプション情報
+    	var processData =
+    		{
+    			"captionPosition": [captionRootX + posOffset[0], captionRootY + posOffset[1]], // キャプションの描画開始座標
+    			"captionManHour": captionManHour,
+    			"captionWorkPeriod": captionWorkPeriod,
+    			"color": data.graphData[i].gridColor,
+    			"captionSizeX": [0, 0], // キャプションパネルのX座標の From 〜 To (後で設定)
+				"captionSizeY": [0, 0], // キャプションパネルのY座標の From 〜 To (後で設定)
+				"numberOfChara": numberOfChara // キャプションの数値部の文字数
+    		};
+    	captionArr.push(processData);
+
+    	// 次工程のキャプション位置を設定
+    	passedTimeLine += data.graphData[i].estimate.length;
+    }
+    return captionArr;
+}
+
+/**
+ * 全工程分のキャプションパネルとキャプション文字を描画する
+ * <ol type="1">
+ * <li>キャプションの描画位置を基にキャプションパネルの描画位置を算出する</li>
+ * <li>前工程のキャプションと位置がかぶる場合にはかぶらない描画位置を設定する</li>
+ * <li>キャプションがグラフより上はみ出る場合にもはみ出ない描画位置を設定する</li>
+ * </ol>
+ * 最初の工程で上にはみ出た場合のは未対応
+ * 
+ * @param c Canvasコンテキスト
+ * @param captionArr 工程毎キャプション情報の配列
+ */
+function drawCaptionAll(c, captionArr) {
+
+	for (var i in captionArr) {
+
+    	// キャプション文字の描画位置を設定
+    	var fontWidth = 12;
+    	var panelSize = [fontWidth / 2 * (2 * 5 + captionArr[i].numberOfChara), fontWidth * 2 ];
+    	var panelPadding = 4; 
+    	var captionX = captionArr[i].captionPosition[0];
+    	var captionY = captionArr[i].captionPosition[1];
+
+    	// キャプションの描画位置を基にキャプションパネルの描画位置を設定
+    	captionArr[i].captionSizeX[0] = captionX - panelPadding;
+    	captionArr[i].captionSizeX[1] = captionX + panelSize[0] + panelPadding;
+    	captionArr[i].captionSizeY[0] = captionY - panelSize[1] - panelPadding;
+    	captionArr[i].captionSizeY[1] = captionY + panelPadding;
+		var panelHeight = captionArr[i].captionSizeY[1] - captionArr[i].captionSizeY[0];
+
+    	// 前工程のキャプションと位置がかぶる場合にはY座標をずらす
+    	if ( i > 0 ) {
+
+    		// ずらしたY座標の位置を格納 [始点, 終点]
+    		var realocatePositionY = [0, 0];
+    		
+    		// 前工程のキャプションとどれだけずらすか(px)
+    		var shiftOffset = 10;
+    		var prevCap = captionArr[i - 1];
+
+    		// 前工程のキャプションパネルと描画位置がかぶっているかを判定する
+    		if (isOverlapCaption(prevCap.captionSizeX, prevCap.captionSizeY,
+    				captionArr[i].captionSizeX, captionArr[i].captionSizeY)) {
+    			
+    			// 前工程のキャプションパネルの上方向に表示する座標を算出する
+    			realocatePositionY[0] = prevCap.captionSizeY[0] - panelHeight - shiftOffset;
+    			realocatePositionY[1] = prevCap.captionSizeY[0] - shiftOffset;
+
+    			// グラフから上にはみ出るかを判定する
+    			if (root_y > realocatePositionY[0]) {
+
+    				// グラフから上にはみ出る場合には前キャプションより下にシフトする
+    				captionArr[i].captionSizeY[0] = prevCap.captionSizeY[1] + shiftOffset;
+    				captionArr[i].captionSizeY[1] = captionArr[i].captionSizeY[0] + panelHeight;
+    				captionArr[i].captionPosition[1] = captionArr[i].captionSizeY[0] + panelHeight - panelPadding;
+    			} else {
+    				// グラフから上にはみ出なければそのまま
+    				captionArr[i].captionSizeY[0] = realocatePositionY[0];
+    				captionArr[i].captionSizeY[1] = realocatePositionY[1];
+    				captionArr[i].captionPosition[1] = realocatePositionY[1]  - panelPadding;
+    			}
+    		} else {
+    			// グラフよりも上にはみ出るかを判定する
+        		// リアロケートした結果かぶる場合もあるので考慮が必要
+    			if (root_y > captionArr[i].captionSizeY[0]) {
+
+            		// ずらしたY座標の位置を格納 [始点, 終点]
+            		var realocatePositionY = [0, 0];
+
+            		// 上にはみ出ないような座標を再設定
+        			realocatePositionY[0] = root_y + shiftOffset;
+        			realocatePositionY[1] = realocatePositionY[0] + panelHeight;
+
+            		// 前工程のキャプションパネルと描画位置がかぶっているかを判定する
+            		if (isOverlapCaption(prevCap.captionSizeX, prevCap.captionSizeY,
+            				captionArr[i].captionSizeX, realocatePositionY)) {
+
+        				// 前キャプションより下にシフトする
+        				captionArr[i].captionSizeY[0] = prevCap.captionSizeY[1] + shiftOffset;
+        				captionArr[i].captionSizeY[1] = captionArr[i].captionSizeY[0] + panelHeight;
+        				captionArr[i].captionPosition[1] = captionArr[i].captionSizeY[0] + panelHeight - panelPadding;
+            		} else {
+            			// 単純にグラフから上にはみ出ない座標を設定する
+            			captionArr[i].captionSizeY[0] = realocatePositionY[0];
+        				captionArr[i].captionSizeY[1] = realocatePositionY[1];
+        				captionArr[i].captionPosition[1] = realocatePositionY[1]  - panelPadding;
+            		}
+        			
+    			}
+    		}
+
+    	} else {
+    		// 初回も一応考慮が必要
+
+    	}
+
+    	// キャプションパネルとキャプションを描画する
+    	drawCaptionSet(c, captionArr[i], fontWidth);
+    }
+}
+
+/**
+ * １工程のキャプションパネルとキャプションを描画する
  * 
  * @param c Canvasコンテキスト
  * @param captionInfo 工程毎キャプション情報
@@ -385,7 +417,7 @@ function isOverlapCaption(
 }
 
 /**
- * グラフにデータを描画する
+ * グラフに見積りデータを描画する
  * @param c Canvasコンテキスト
  * @param data 見積りデータJSON
  */

@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+
+div.estimate_legend {width:750px;}
+div.estimate_scale  {width:50px; float: left;}
+div.estimate_graphdata {width:700px; float: right;}
+
+table.legend_table {width:450px; }
+table.legend_table th {width:40px;}
+table.legend_table td {width:100px;}

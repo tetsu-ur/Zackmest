@@ -52,7 +52,7 @@ window.addEventListener('DOMContentLoaded',
 	    		  "manHourMonth": 5.7, 
 	    		  "gridColor": [255, 255, 0],
 	    		  "lines": 6,
-	    		  "estimate":[ 6, 6, 6, 6, 6, 6]
+	    		  "estimate":[ 3, 6, 6, 6, 6, 6]
 	    	  },
 	    	  {
 	    		  "workPeriod": 1.8,
@@ -107,6 +107,103 @@ window.addEventListener('DOMContentLoaded',
       	drawTermLine(c, data.standardWorkPeriodJuas, [255, 128, 0], 17,
       			Math.round(data.standardWorkPeriodJuas * 10) / 10 + "ヶ月");
 
+
+    	// 工程のキャプションを描画
+      	var passedTimeLine = 0;
+      	var captionArr = new Array();
+    	// 描画するキャプションの情報を作成して配列に格納する
+        for (var i in data.graphData) {
+        	var captionManHour = "工数：" + data.graphData[i].manHourProcess + "人月";
+        	var captionWorkPeriod = "期間：" + data.graphData[i].workPeriod + "ヶ月";
+
+        	// 数値部はデータによって桁数が変わるので最大文字数を算出
+        	var numberOfChara = String(data.graphData[i].manHourProcess).length;
+        	if ( numberOfChara < String(data.graphData[i].workPeriod).length )
+        		numberOfChara = String(data.graphData[i].workPeriod.length);
+
+        	var posOffset = [10, -10];
+        	// キャプション(X座標)…工程の最初のグリッドのルート
+        	var captionRootX = graph_root_x + passedTimeLine * GRID_WIDTH;
+        	// キャプション(Y座標)…工程の人月の上部のグリッドのルート
+        	var captionRootY = graph_root_y - data.graphData[i].estimate[0] * GRID_HEIGHT;
+        	
+        	var processData =
+        		{
+        			"position": [captionRootX + posOffset[0], captionRootY + posOffset[1]],
+        			"captionManHour": captionManHour,
+        			"captionWorkPeriod": captionWorkPeriod,
+        			"color": data.graphData[i].gridColor,
+        			"captionSizeX": [0, 0],
+					"captionSizeY": [0, 0],
+					"numberOfChara": numberOfChara
+        		};
+        	captionArr.push(processData);
+
+        	// 次工程のキャプション位置を設定
+        	passedTimeLine += data.graphData[i].estimate.length;
+        }
+
+        for (var i in captionArr) {
+
+        	// キャプションを描画
+        	var fontWidth = 12;
+        	var panelSize = [fontWidth / 2 * (2 * 5 + captionArr[i].numberOfChara), fontWidth * 2 ];
+        	var panelPadding = 4; 
+        	var captionX = captionArr[i].position[0];
+        	var captionY = captionArr[i].position[1];
+
+        	captionArr[i].captionSizeX[0] = captionX - panelPadding;
+        	captionArr[i].captionSizeX[1] = captionX + panelSize[0] + panelPadding;
+        	captionArr[i].captionSizeY[0] = captionY - panelSize[1] - panelPadding;
+        	captionArr[i].captionSizeY[1] = captionY + panelPadding;
+
+        	// 前工程のキャプションと位置がかぶる場合にはY座標をずらす
+        	if ( i > 0 ) {
+
+        		var shiftOffset = 10;
+
+        		// X座標がかぶっていて、Y軸もかぶっているか
+        		if (captionArr[i - 1].captionSizeX[1] > captionArr[i].captionSizeX[0]
+        			// 前工程のキャプションの底辺が今回の上辺より上にある かつ
+        			// 今回の上辺＋パネル高さよりもしたにある
+        		 	&& (captionArr[i - 1].captionSizeY[1] > captionArr[i].captionSizeY[0]
+        		 		// 前工程のキャプションの上辺が今回の底辺より上にある
+        		 		|| captionArr[i - 1].captionSizeY[0] > captionArr[i].captionSizeY[1])) {
+
+        			var panelHeight = captionArr[i].captionSizeY[1] - captionArr[i].captionSizeY[0];
+        			var shiftHeight = captionArr[i].captionSizeY[1] - captionArr[i - 1].captionSizeY[0];
+        			captionArr[i].captionSizeY[1] = captionArr[i - 1].captionSizeY[0] - shiftOffset;
+        			captionArr[i].captionSizeY[0] = captionArr[i - 1].captionSizeY[0] - panelHeight - shiftOffset;
+        			captionY = captionY - shiftHeight - shiftOffset;
+        		}
+        	}
+        	
+//        	alert("X : " + captionArr[i].captionSizeX[0] + " - " + captionArr[i].captionSizeX[1] + "\n" +
+//        		  "Y : " + captionArr[i].captionSizeY[0] + " - " + captionArr[i].captionSizeY[1] + "\n");
+        	c.beginPath();
+        	c.lineWidth = 1;
+        	c.strokeStyle = "rgb( 0, 0 , 0)";
+        	c.rect(captionArr[i].captionSizeX[0] , captionArr[i].captionSizeY[0],
+        			captionArr[i].captionSizeX[1] - captionArr[i].captionSizeX[0], 
+        			captionArr[i].captionSizeY[1] - captionArr[i].captionSizeY[0] );
+        	c.fill();
+        	c.stroke();
+        	c.closePath();
+        	
+        	c.beginPath();
+        	c.font = fontWidth + "px 'Monospace'";
+        	c.strokeStyle = "rgb(0, 0, 0)";
+        	c.textAlign = "left";
+        	c.lineWidth = 0.5;
+        	c.strokeText(captionArr[i].captionWorkPeriod, captionX, captionY);
+        	c.strokeText(captionArr[i].captionManHour, captionX, captionY - 15);
+        	c.closePath();
+
+        }
+
+        
+    	// キャプションを描画
+
     }
   }
 );
@@ -121,8 +218,10 @@ function drawEstimateData(c, data) {
 	c.strokeStyle = "rgb(0, 0, 0)";
 	var timeLine = 0;
 	
+	// 工程単位の処理をループ
     for (var h in data) {
 
+    	// グリッドの色を設定
     	var rgbArr = data[h].gridColor;
     	var colorDecay = 0.6;
     	var gradColorJson =
@@ -134,6 +233,7 @@ function drawEstimateData(c, data) {
     				 			   Math.round(rgbArr[2]*colorDecay)]},
     		];
     	
+    	// タイムライン単位の処理をループ
     	for (var i in data[h].estimate) {
         	timeLine++;
         	var drawGridQuantityY = Math.ceil(data[h].estimate[i] / grid_unit);
@@ -302,10 +402,10 @@ function drawTermLine(c, period, rgbArr, lengthOffset, caption) {
 	colorDecay = 1.5;
 	gradColorJson =
 		[
-		 {"ratio":0,		"rgb":[255, 255, 255]},
-		 {"ratio":0.1,		"rgb":[Math.round(rgbArr[0]*colorDecay), 
-		              		       Math.round(rgbArr[1]*colorDecay), 
-		              		       Math.round(rgbArr[2]*colorDecay)]},
+		 {"ratio":0,	"rgb":[255, 255, 255]},
+		 {"ratio":0.1,	"rgb":[Math.round(rgbArr[0]*colorDecay), 
+		              	       Math.round(rgbArr[1]*colorDecay), 
+		              	       Math.round(rgbArr[2]*colorDecay)]},
 		 {"ratio":0.9,	"rgb":[rgbArr[0], rgbArr[1], rgbArr[2]]}
 		];
 	putPartOfTermLine(c, [lineRootX, lineRootY], gradColorJson, turnTriHeight);
@@ -327,7 +427,7 @@ function drawTermLine(c, period, rgbArr, lengthOffset, caption) {
  * 図形描画と塗りつぶしのみで、影の設定は行わない。
  * 
  * @param c Canvasコンテキスト
- * @param lineRoot 線のルート(「▼」の左上の原点)の[x, y]形式の配列
+ * @param {Array.<number>} lineRoot 線のルート(「▼」の左上の原点)の[x, y]形式の配列
  * @param gradColorJson グラデーションの配色情報JSON
  * @param turnTriHeight 「▼」の高さ
  * @param option 描画オプション(任意)

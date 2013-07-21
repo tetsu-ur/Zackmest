@@ -44,7 +44,7 @@ window.addEventListener('DOMContentLoaded',
 	    		  "manHourMonth": 2.9, 		// 工数（月あたり）
 	    		  "gridColor": [255, 0, 0],
 	    		  "lines": 4,
-	    		  "estimate":[ 3, 3, 3, 3]
+	    		  "estimate":[ 8, 3, 3, 3]
 	    	  },
 	    	  {
 	    		  "workPeriod": 1.5,
@@ -52,7 +52,7 @@ window.addEventListener('DOMContentLoaded',
 	    		  "manHourMonth": 5.7, 
 	    		  "gridColor": [255, 255, 0],
 	    		  "lines": 6,
-	    		  "estimate":[ 3, 6, 6, 6, 6, 6]
+	    		  "estimate":[ 7, 6, 6, 6, 6, 6]
 	    	  },
 	    	  {
 	    		  "workPeriod": 1.8,
@@ -60,7 +60,7 @@ window.addEventListener('DOMContentLoaded',
 	    		  "manHourMonth": 7.7, 
 	    		  "gridColor": [0, 255, 0],
 	    		  "lines": 7,
-	    		  "estimate":[ 8, 8, 8, 8, 8, 8, 8]
+	    		  "estimate":[ 9, 8, 8, 8, 8, 8, 8]
 	    	  },
 		      {
 	    		  "workPeriod": 1.6,
@@ -68,7 +68,23 @@ window.addEventListener('DOMContentLoaded',
 	    		  "manHourMonth": 4.9, 
 	       		  "gridColor": [96, 96, 255],
 	       		  "lines": 6,
-	       		  "estimate":[ 5, 5, 5, 5, 5]
+	       		  "estimate":[ 10, 5, 5, 5, 5]
+	    	  },
+		      {
+	    		  "workPeriod": 1.6,
+	    		  "manHourProcess": 7.8, 
+	    		  "manHourMonth": 4.9, 
+	       		  "gridColor": [96, 96, 96],
+	       		  "lines": 2,
+	       		  "estimate":[ 5, 5]
+	    	  },
+		      {
+	    		  "workPeriod": 1.6,
+	    		  "manHourProcess": 7.8, 
+	    		  "manHourMonth": 4.9, 
+	       		  "gridColor": [96, 255, 96],
+	       		  "lines": 2,
+	       		  "estimate":[ 5, 5]
 	    	  }]
     	  };
 
@@ -135,6 +151,7 @@ window.addEventListener('DOMContentLoaded',
         			"color": data.graphData[i].gridColor,
         			"captionSizeX": [0, 0],
 					"captionSizeY": [0, 0],
+					// キャプションの数値部の文字数
 					"numberOfChara": numberOfChara
         		};
         	captionArr.push(processData);
@@ -160,21 +177,49 @@ window.addEventListener('DOMContentLoaded',
         	// 前工程のキャプションと位置がかぶる場合にはY座標をずらす
         	if ( i > 0 ) {
 
+        		// ずらしたY座標の位置を格納 [始点, 終点]
+        		var realocatePositionY = [0, 0];
+        		
         		var shiftOffset = 10;
+        		var prevCap = captionArr[i - 1];
+
+//            	alert("前回Y : " + prevCap.captionSizeY[0] + " - " + prevCap.captionSizeY[1] + "\n" +
+//            			"今回Y : " + captionArr[i].captionSizeY[0] + " - " + captionArr[i].captionSizeY[1]);
 
         		// X座標がかぶっていて、Y軸もかぶっているか
-        		if (captionArr[i - 1].captionSizeX[1] > captionArr[i].captionSizeX[0]
-        			// 前工程のキャプションの底辺が今回の上辺より上にある かつ
-        			// 今回の上辺＋パネル高さよりもしたにある
-        		 	&& (captionArr[i - 1].captionSizeY[1] > captionArr[i].captionSizeY[0]
-        		 		// 前工程のキャプションの上辺が今回の底辺より上にある
-        		 		|| captionArr[i - 1].captionSizeY[0] > captionArr[i].captionSizeY[1])) {
+        		if (prevCap.captionSizeX[1] > captionArr[i].captionSizeX[0]
+        			// 前回の上辺〜底辺の間に今回のキャプションの上辺がある
+        		 	&& ((prevCap.captionSizeY[1] > captionArr[i].captionSizeY[0]) &&
+        		 		(prevCap.captionSizeY[0] < captionArr[i].captionSizeY[0])
+        		 		// 前回の上辺〜底辺の間に今回のキャプションの低辺がある
+        		 		|| 
+        		 		(prevCap.captionSizeY[1] > captionArr[i].captionSizeY[1]) &&
+        		 		 prevCap.captionSizeY[0] < captionArr[i].captionSizeY[1])
+        		 		||
+        		 		// 前行程のキャプションと同じ高さにある
+        		 		(prevCap.captionSizeY[1] == captionArr[i].captionSizeY[1])) {
 
         			var panelHeight = captionArr[i].captionSizeY[1] - captionArr[i].captionSizeY[0];
-        			var shiftHeight = captionArr[i].captionSizeY[1] - captionArr[i - 1].captionSizeY[0];
-        			captionArr[i].captionSizeY[1] = captionArr[i - 1].captionSizeY[0] - shiftOffset;
-        			captionArr[i].captionSizeY[0] = captionArr[i - 1].captionSizeY[0] - panelHeight - shiftOffset;
-        			captionY = captionY - shiftHeight - shiftOffset;
+//        			var shiftHeight = captionArr[i].captionSizeY[1] - prevCap.captionSizeY[0];
+        			realocatePositionY[0] = prevCap.captionSizeY[0] - panelHeight - shiftOffset;
+        			realocatePositionY[1] = prevCap.captionSizeY[0] - shiftOffset;
+
+        			// グラフから上にはみ出るかを判定する
+        			if (root_y > realocatePositionY[1]) {
+
+        				// グラフから上にはみ出る場合には前キャプションより下にシフトする
+        				captionArr[i].captionSizeY[0] = prevCap.captionSizeY[1] + shiftOffset;
+        				captionArr[i].captionSizeY[1] = captionArr[i].captionSizeY[0] + panelHeight;
+//        				captionArr[i].captionSizeY[1] = captionArr[i].captionSizeY[0] + shiftHeight;
+            			captionY = captionArr[i].captionSizeY[0] + panelHeight - panelPadding;
+        			} else {
+        				// グラフから上にはみ出なければそのまま
+        				captionArr[i].captionSizeY[0] = realocatePositionY[0];
+        				captionArr[i].captionSizeY[1] = realocatePositionY[1];
+            			captionY = realocatePositionY[1]  - panelPadding;
+        			}
+
+        			
         		}
         	}
         	

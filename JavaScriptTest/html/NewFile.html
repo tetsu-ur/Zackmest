@@ -5,13 +5,20 @@
 	<script type="text/javascript" src="../DrawTest.js"></script>
 	<link href="css/zackmest.css" rel="stylesheet">
 	<title>Insert title here</title>
+	
+<script type="text/javascript">
+     //ここにスクリプトを書きます
+</script> 
+
 </head>
 <body>
 
-<div class="estimate_legend">
-	<div class="estimate_scale">&nbsp;</div>
-	<div class="estimate_graphdata">
-		<fieldset>
+<div class="estimate_legend_area">
+	<div class="estimate_title">
+		<span class="graph_title">サンプルグラフ</span>
+	</div>
+	<div class="estimate_legend">
+		<fieldset class="legend_field">
 			<legend>凡例</legend>
 			<table class="legend_table">
 				<tr>
@@ -47,20 +54,19 @@
 	</div>
 </div>
 
-<div width="750" style="table-layout: fixed; clear:both;">
+<div class="estimate_graph_area">
 
-	<div>
+	<div class="estimate_scale">
 		<!-- グラフY軸の目盛り -->
-		<canvas id="cv_scale" width="50" height="270" style="float: left;">
-		  <!--Canvas機能に対応していないブラウザへの備え（2）-->
+		<canvas id="cv_scale" class="scale" width="50" height="270">
+		  <!--Canvas機能に対応していないブラウザへの備え-->
 		  Canvas機能に対応したブラウザでアクセスしてください。
 		</canvas>
 	</div>
-	
-	<div>
+	<div class="estimate_pane">
 		<!-- グラフ本体 -->
-		<canvas id="cv" width="750" height="270" style="border:1px solid #000000; float: left;">
-		  <!--Canvas機能に対応していないブラウザへの備え（2）-->
+		<canvas id="cv" class="graph" width="750" height="270" >
+		  <!--Canvas機能に対応していないブラウザへの備え-->
 		  Canvas機能に対応したブラウザでアクセスしてください。
 		</canvas>
 	</div>

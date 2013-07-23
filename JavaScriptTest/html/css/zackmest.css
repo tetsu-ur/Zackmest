@@ -1,9 +1,25 @@
 @CHARSET "UTF-8";
 
-div.estimate_legend {width:750px;}
-div.estimate_scale  {width:50px; float: left;}
-div.estimate_graphdata {width:700px; float: right;}
+/* border:1px solid #000000; */
 
+/* グラフタイトルおよび凡例 */
+div.estimate_legend_area {width:800px; height:90px;}
+div.estimate_title {width:310px; float:left; text-align:center; text-valign:middle;}
+div.estimate_legend {width:450px;  float:left; }
+
+span.graph_title { font-size: 20px; border:1px solid #000000;}
+fieldset.legend_field {width:450px; padding:5px;}
 table.legend_table {width:450px; }
 table.legend_table th {width:40px;}
-table.legend_table td {width:100px;}
+table.legend_table td {width:110px;}
+
+
+
+/* 見積りグラフ */
+div.estimate_graph_area  {width:800px; table-layout: fixed; clear:both;}
+div.estimate_scale  {width:50px;  float: left;}
+div.estimate_pane   {width:700px; float: right;}
+
+canvas.scale {float: left;}
+canvas.graph {float: right;}
+

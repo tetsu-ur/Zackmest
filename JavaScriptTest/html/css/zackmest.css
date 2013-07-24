@@ -4,7 +4,7 @@
 
 /* グラフタイトルおよび凡例 */
 div.estimate_legend_area {width:800px; height:90px;}
-div.estimate_title {width:310px; float:left; text-align:center; text-valign:middle;}
+div.estimate_title {width:310px; float:left; text-align:center;}
 div.estimate_legend {width:450px;  float:left; }
 
 span.graph_title { font-size: 20px; border:1px solid #000000;}
@@ -18,8 +18,8 @@ table.legend_table td {width:110px;}
 /* 見積りグラフ */
 div.estimate_graph_area  {width:800px; table-layout: fixed; clear:both;}
 div.estimate_scale  {width:50px;  float: left;}
-div.estimate_pane   {width:700px; float: right;}
+div.estimate_pane   {width:750px; float: right; overflow:auto;}
 
-canvas.scale {float: left;}
-canvas.graph {float: right;}
+canvas.scale {}
+canvas.graph {}
 

@@ -21,132 +21,77 @@ var grid_unit = 1;
 /* 目盛りのCANVASの幅（動的に取得したい） */
 var scale_width = 50;
 
-window.addEventListener('DOMContentLoaded',
-  function() {
+function getGraphWidth(data) {
+
+	return getGridQuantityX(data.maxPeriod) * GRID_WIDTH + 30;
+}
+
+// グラフのX軸のグリッド数を算出する。値は４の倍数になるよう繰り上げる。
+function getGridQuantityX(maxPeriod) {
+
+	var gridQuantityX = Math.ceil(data.maxPeriod * 4);
+	gridQuantityX += 4 - (gridQuantityX % 4);
+	return gridQuantityX;
+}
+
+function drawEstimateCanvas(data) {
+	
     // Canvas APIが利用できるかを判定（1）
-    if (HTMLCanvasElement) {
-      // コンテキストオブジェクトを取得（2）
-      var cv = document.querySelector('#cv');
-      var c = cv.getContext('2d');
-
-      // テストデータ workPeriod, manHourProcess, manHourMonth は未使用
-      // lines はいらないかも（グラフ長は標準工期などの長い方で算出するようになったため）
-      var data = 
-    	  {
-    		  "earliestWorkPeriodSlim": 8.39,	// 最短開発期間（月）SLIM
-    	   	  "standardWorkPeriodJuas": 3.3,	// 標準工期（月）JUAS
-//    	   	  "standardWorkPeriodJuas": 7.7,	// 標準工期（月）JUAS
-    		  "maxPeriod": 8.39,				// グラフの最大期間（月）
-    	   	  "maxManHourMonth": 7.7,			// グラフ内で最大の人月
-    	   	  "graphData":
-	     	  [{
-	    		  "workPeriod": 1.1,		// 工期
-	    		  "manHourProcess": 3.2, 	// 工数（工程）
-	    		  "manHourMonth": 2.9, 		// 工数（月あたり）
-	    		  "gridColor": [255, 64, 64],
-	    		  "lines": 4,
-	    		  "estimate":[ 3, 3, 3, 3]
-	    	  },
-	    	  {
-	    		  "workPeriod": 1.5,
-	    		  "manHourProcess": 8.6, 
-	    		  "manHourMonth": 5.7, 
-	    		  "gridColor": [255, 255, 64],
-	    		  "lines": 6,
-	    		  "estimate":[ 6, 6, 6, 6, 6, 6]
-	    	  },
-	    	  {
-	    		  "workPeriod": 1.8,
-	    		  "manHourProcess": 13.8, 
-	    		  "manHourMonth": 7.7, 
-	    		  "gridColor": [64, 255, 64],
-	    		  "lines": 7,
-	    		  "estimate":[ 8, 8, 8, 8, 8, 8, 8]
-	    	  },
-		      {
-	    		  "workPeriod": 1.6,
-	    		  "manHourProcess": 7.8, 
-	    		  "manHourMonth": 4.9, 
-	       		  "gridColor": [96, 96, 255],
-	       		  "lines": 6,
-	       		  "estimate":[ 5, 5, 5, 5, 5]
-	    	  },
-		      {
-	    		  "workPeriod": 1.6,
-	    		  "manHourProcess": 7.8, 
-	    		  "manHourMonth": 4.9, 
-	       		  "gridColor": [96, 96, 96],
-	       		  "lines": 2,
-	       		  "estimate":[ 5, 5]
-	    	  },
-		      {
-	    		  "workPeriod": 1.6,
-	    		  "manHourProcess": 7.8, 
-	    		  "manHourMonth": 4.9, 
-	       		  "gridColor": [96, 255, 96],
-	       		  "lines": 2,
-	       		  "estimate":[ 5, 5]
-	    	  },
-		      {
-	    		  "workPeriod": 1.6,
-	    		  "manHourProcess": 7.8, 
-	    		  "manHourMonth": 4.9, 
-	       		  "gridColor": [128, 255, 128],
-	       		  "lines": 2,
-	       		  "estimate":[ 1, 1]
-	    	  }]
-    	  };
-
-      // グラフ対象データ数を取得する。値は４の倍数になるよう繰り上げる。
-      GRAPH_GRID_X_NUM = Math.ceil(data.maxPeriod * 4);
-      GRAPH_GRID_X_NUM += 4 - (GRAPH_GRID_X_NUM % 4);
-
-      // グラフの基礎データ設定
-      graph_root_x = root_x;
-      graph_root_y = root_y + (GRID_HEIGHT * GRAPH_GRID_Y_NUM );
-      graph_x_length = (GRID_WIDTH * GRAPH_GRID_X_NUM);
-      graph_y_length = graph_root_y - root_y;
-      
-      // Y軸の１グリッドの人月数を算出(基本は１)
-      grid_unit = 1;
-      // Y軸のグリッド個数を超えていたら１グリッドあたりの人月を増やす
-      if ( data.maxManHourMonth > GRAPH_GRID_Y_NUM ) {
-          grid_unit = Math.ceil(data.maxManHourMonth / GRAPH_GRID_Y_NUM );
-      }
-      
-      // グラフのX軸/Y軸およグリッド線を描画
-      drawAxis(c);
-
-      // X軸/Y軸のスケール（X軸:月数, Y軸:工数）を描画
-      drawScale(c);
-      
-      // グラフにデータを描画する
-      drawEstimateData(c, data.graphData);
-      
-
-		// 最短開発期間を描画
-      	drawTermLine(c, data.earliestWorkPeriodSlim, [255, 0, 0], 5,
-      			Math.round(data.earliestWorkPeriodSlim * 10) / 10 + "ヶ月");
-
-      	// 標準工期を描画
-      	drawTermLine(c, data.standardWorkPeriodJuas, [255, 128, 0], 22,
-      			Math.round(data.standardWorkPeriodJuas * 10) / 10 + "ヶ月");
-
-      	// 全工程分のキャプションの情報を作成する
-      	var captionInfos = createCaptionInfos(data);
-
-        // 全工程分のキャプションを描画する
-        drawCaptionAll(c, captionInfos);
-
+    if (!HTMLCanvasElement) {
+    	return false;
     }
-  }
-);
+   
+	// コンテキストオブジェクトを取得（2）
+	var cv = window.document.querySelector('#cv');
+	var c = cv.getContext('2d');
+	
+	// グラフのX軸のグリッド数を算出する。値は４の倍数になるよう繰り上げる。
+	GRAPH_GRID_X_NUM = getGridQuantityX(data.maxPeriod);
+	
+	// グラフの基礎データ設定
+	graph_root_x = root_x;
+	graph_root_y = root_y + (GRID_HEIGHT * GRAPH_GRID_Y_NUM );
+	graph_x_length = (GRID_WIDTH * GRAPH_GRID_X_NUM);
+	graph_y_length = graph_root_y - root_y;
+
+	// Y軸の１グリッドの人月数を算出(基本は１)
+	grid_unit = 1;
+	// Y軸のグリッド個数を超えていたら１グリッドあたりの人月を増やす
+	if ( data.maxManHourMonth > GRAPH_GRID_Y_NUM ) {
+		grid_unit = Math.ceil(data.maxManHourMonth / GRAPH_GRID_Y_NUM );
+	}
+      
+	// グラフのX軸/Y軸およグリッド線を描画
+	drawAxis(c);
+
+	// X軸/Y軸のスケール（X軸:月数, Y軸:工数）を描画
+	drawScale(c);
+      
+
+	// グラフにデータを描画する
+	drawEstimateData(c, data.graphData);
+
+	// 最短開発期間を描画
+	drawTermLine(c, data.earliestWorkPeriodSlim, [ 255, 0, 0 ], 5,
+			Math.round(data.earliestWorkPeriodSlim * 10) / 10 + "ヶ月");
+
+	// 標準工期を描画
+	drawTermLine(c, data.standardWorkPeriodJuas, [ 255, 128, 0 ], 22,
+			Math.round(data.standardWorkPeriodJuas * 10) / 10 + "ヶ月");
+
+	// 全工程分のキャプションの情報を作成する
+	var captionInfos = createCaptionInfos(data);
+
+	// 全工程分のキャプションを描画する
+	drawCaptionAll(c, captionInfos);
+}
 
 /**
  * 全工程の工程毎キャプション情報の配列を作成する。<br />
  * キャプションパネルの描画座標はここでは設定しない。
  * 
- * @param data 見積り情報JSON
+ * @param data
+ *            見積り情報JSON
  * @returns {Array} 工程毎キャプション情報の配列
  */
 function createCaptionInfos(data) {

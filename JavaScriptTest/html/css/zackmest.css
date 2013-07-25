@@ -2,12 +2,48 @@
 
 /* border:1px solid #000000; */
 
+/** jQuery スライダ **/
+/*
+#jquery-ui-slider {
+    margin: 10px;
+}
+*/
+
+/* #jquery-ui-slider-wrap {
+    padding: 5px;
+    text-align: center;
+    width: 500px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    background: #f0f0f0;
+}
+ */
+ #jquery-ui-slider-wrap {
+    padding: 5px;
+    width: 650px;
+}
+ 
+#jquery-ui-slider {
+    margin: 10px auto;
+    height: 15px;
+}
+
+/* スライダキャプション */
+div.slider_caption_area {width:800px;}
+table.slider_caption_table {};
+table.slider_caption_table th {width:40px;}
+table.slider_caption_table td {width:140px; border:1px solid black;}
+
+#jquery-ui-slider-wrap .ui-widget-header {bakground: none repeat-x scroll 50% 50% #CCCCFF;}
+.ui-slider-range { background: #B8BFFF; }
+.ui-slider .ui-slider-handle { border-color: #888FCF; border-width:2px;}
+
 /* グラフタイトルおよび凡例 */
 div.estimate_legend_area {width:800px; height:90px;}
 div.estimate_title {width:310px; float:left; text-align:center;}
 div.estimate_legend {width:450px;  float:left; }
 
-span.graph_title { font-size: 20px; border:1px solid #000000;}
+span#graph_title { font-size: 20px; border:1px solid #000000;}
 fieldset.legend_field {width:450px; padding:5px;}
 table.legend_table {width:450px; }
 table.legend_table th {width:40px;}

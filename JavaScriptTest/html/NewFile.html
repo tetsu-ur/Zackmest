@@ -2,97 +2,115 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<!-- jQuery と jQuery UI をインポート -->
+	<link rel="stylesheet" href="lib/themes/base/jquery.ui.all.css" />
+	<script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="lib/ui/jquery-ui.js"></script>
+
+	<!-- テストデータ -->
+	<script type="text/javascript" src="../estimate_test_data.js"></script>
+
 	<script type="text/javascript" src="../DrawTest.js"></script>
 	<link href="css/zackmest.css" rel="stylesheet">
 	<title>Insert title here</title>
 	
 <script type="text/javascript">
 
-// テストデータ workPeriod, manHourProcess, manHourMonth は未使用
-// lines はいらないかも（グラフ長は標準工期などの長い方で算出するようになったため）
-var data = 
-		{
-			"earliestWorkPeriodSlim": 8.39,	// 最短開発期間（月）SLIM
-			"standardWorkPeriodJuas": 3.3,	// 標準工期（月）JUAS
-//    	   	  "standardWorkPeriodJuas": 7.7,	// 標準工期（月）JUAS
-			"maxPeriod": 8.39,				// グラフの最大期間（月）
-			"maxManHourMonth": 7.7,			// グラフ内で最大の人月
-			"graphData":
-				[{
-					"workPeriod": 1.1,		// 工期
-					"manHourProcess": 3.2, 	// 工数（工程）
-					"manHourMonth": 2.9, 		// 工数（月あたり）
-					"gridColor": [255, 64, 64],
-					"lines": 4,
-					"estimate":[ 3, 3, 3, 3]
-				},
-				{
-					"workPeriod": 1.5,
-					"manHourProcess": 8.6, 
-					"manHourMonth": 5.7, 
-					"gridColor": [255, 255, 64],
-					"lines": 6,
-					"estimate":[ 6, 6, 6, 6, 6, 6]
-				},
-				{
-					"workPeriod": 1.8,
-					"manHourProcess": 13.8, 
-					"manHourMonth": 7.7, 
-					"gridColor": [64, 255, 64],
-					"lines": 7,
-					"estimate":[ 8, 8, 8, 8, 8, 8, 8]
-				},
-				{
-					"workPeriod": 1.6,
-					"manHourProcess": 7.8, 
-					"manHourMonth": 4.9, 
-					"gridColor": [96, 96, 255],
-					"lines": 6,
-					"estimate":[ 5, 5, 5, 5, 5]
-				},
-				{
-					"workPeriod": 1.6,
-					"manHourProcess": 7.8, 
-					"manHourMonth": 4.9, 
-					"gridColor": [96, 96, 96],
-					"lines": 2,
-					"estimate":[ 5, 5]
-				},
-				{
-					"workPeriod": 1.6,
-					"manHourProcess": 7.8, 
-					"manHourMonth": 4.9, 
-					"gridColor": [96, 255, 96],
-					"lines": 2,
-					"estimate":[ 5, 5]
-				},
-				{
-					"workPeriod": 1.6,
-					"manHourProcess": 7.8, 
-					"manHourMonth": 4.9, 
-					"gridColor": [128, 255, 128],
-					"lines": 2,
-					"estimate":[ 1, 1]
-				}]
-		};
+var PROCESS_CODE = {1:"要件定義", 2:"基本設計", 3:"詳細設計", 4:"テスト"};
 
 /* onload によってグラフを描画する */
 window.onload = function() {
-	document.getElementById("cv").width = getGraphWidth(data);
-
-	drawEstimateCanvas(data);
-	
-//	alert("getGraphCanvasWidth() = " + getGraphCanvasWidth());
+	document.getElementById("cv").width = getGraphWidth(estimateDataJson.estimateValue[0]);
+	// 初期表示はとりあえずいろいろなパターンが入ったデータを表示
+	drawEstimateCanvas(estimateDataJson.estimateValue[0]);
 }
 
+$(function() {
+	
+    $("#jquery-ui-slider").slider( {
+        orientation: 'horizontal',
+        animate: "nomal",
+        range: true,
+        values: [ 1, 5 ],
+        min: 1,
+        max: 5,
+        slide: function( event, ui ) {
+
+        	// スライドによって範囲が重複する場合には移動させない
+        	if (ui.values[0] == ui.values[1]) {
+	        	return false;
+			}
+
+            // スライダの選択値からパターンIDを生成する
+            var patternId = (function(){
+            	var selectedRange = String(ui.values[0]) + String(ui.values[1]);
+            	var patternId = "";
+            	
+            	for (var i = 1 ; i <= 4; i++ ) {
+            		patternId += (ui.values[0] <= i && i < ui.values[1]) ? "1" : "0";
+            	}
+            	
+            	return patternId;
+            })();
+            
+            // パターンIDに対応する見積りデータをグラフに描画する
+            for (var i in estimateDataJson.estimateValue) {
+            	if (estimateDataJson.estimateValue[i].patternId == patternId) {
+            		drawEstimateCanvas(estimateDataJson.estimateValue[i]);
+            		break;
+            	}
+            }
+            
+            // スライダで指定した範囲に対応するタイトルを作成
+            var graphTitle = (function() {
+            	var title;
+            	if (patternId.indexOf("1") ==  patternId.lastIndexOf("1")){
+                	title = PROCESS_CODE[patternId.indexOf("1") + 1];
+            	} else {
+                	title = PROCESS_CODE[patternId.indexOf("1") + 1];
+                	title += " 〜 "
+                	title += PROCESS_CODE[patternId.lastIndexOf("1") + 1];
+            	}
+            	return title;
+            })();
+
+            $("#graph_title").text(graphTitle);
+            
+        }
+    } );
+    
+//    jQuery('#jquery-ui-slider-values-1').val(jQuery('#jquery-ui-slider').slider('values',1 ));
+} );
 </script> 
 
 </head>
 <body>
 
+<div class="slider_caption_area">
+	<table class="slider_caption_table">
+		<tr>
+			<th><img src="image/ProcessRequirementDefinition.png" width="15px"/></th>
+			<td>要件定義</td>
+			<th><img src="image/ProcessBasicDesign.png" width="15px"/></th>
+			<td>基本設計</td>
+			<th><img src="image/ProcessImpl.png" width="15px"/></th>
+			<td>実装工程</td>
+			<th><img src="image/ProcessTest.png" width="15px"/></th>
+			<td>テスト工程</td>
+		</tr>
+	</table>
+</div>
+
+<div id="jquery-ui-slider-wrap">
+    <!-- スライダ色の変更は .ui-widget-header -->
+    <!-- スライダのツマミ色の変更は .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default -->
+    <div id="jquery-ui-slider"></div>
+</div>
+
 <div class="estimate_legend_area">
 	<div class="estimate_title">
-		<span class="graph_title">サンプルグラフ</span>
+		<span id="graph_title">サンプルグラフ</span>
 	</div>
 	<div class="estimate_legend">
 		<fieldset class="legend_field">

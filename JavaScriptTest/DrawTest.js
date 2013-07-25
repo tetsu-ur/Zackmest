@@ -29,7 +29,7 @@ function getGraphWidth(data) {
 // グラフのX軸のグリッド数を算出する。値は４の倍数になるよう繰り上げる。
 function getGridQuantityX(maxPeriod) {
 
-	var gridQuantityX = Math.ceil(data.maxPeriod * 4);
+	var gridQuantityX = Math.ceil(maxPeriod * 4);
 	gridQuantityX += 4 - (gridQuantityX % 4);
 	return gridQuantityX;
 }
@@ -44,6 +44,7 @@ function drawEstimateCanvas(data) {
 	// コンテキストオブジェクトを取得（2）
 	var cv = window.document.querySelector('#cv');
 	var c = cv.getContext('2d');
+	c.clearRect(0, 0, cv.width, cv.height);
 	
 	// グラフのX軸のグリッド数を算出する。値は４の倍数になるよう繰り上げる。
 	GRAPH_GRID_X_NUM = getGridQuantityX(data.maxPeriod);
@@ -66,7 +67,6 @@ function drawEstimateCanvas(data) {
 
 	// X軸/Y軸のスケール（X軸:月数, Y軸:工数）を描画
 	drawScale(c);
-      
 
 	// グラフにデータを描画する
 	drawEstimateData(c, data.graphData);
@@ -504,6 +504,8 @@ function drawScale(c) {
      */
 	var cvScale = document.querySelector('#cv_scale');
 	var cScale = cvScale.getContext('2d');
+	cScale.clearRect(0, 0, cvScale.width, cvScale.height);
+	
 	cScale.font = "14px 'Monospace'";
 	cScale.textAlign = "right";
 	cScale.lineWidth = 0.5;

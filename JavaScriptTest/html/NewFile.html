@@ -27,7 +27,16 @@ window.onload = function() {
 }
 
 $(function() {
+
+	// 「ざっくり見積り」ボタン
+	$( "button:first" ).button({
+		icons: {
+			primary: " ui-icon-calculator"
+		},
+		text: true
+	}).click(function(){ /* クリック時の動作 */ });
 	
+	// スライドバー
     $("#jquery-ui-slider").slider( {
         orientation: 'horizontal',
         animate: "nomal",
@@ -37,12 +46,12 @@ $(function() {
         max: 5,
         slide: function( event, ui ) {
 
-        	// スライドによって範囲が重複する場合には移動させない
+        	// スライドによって範囲が重複する場合には移動させない 
         	if (ui.values[0] == ui.values[1]) {
 	        	return false;
 			}
 
-            // スライダの選択値からパターンIDを生成する
+            // スライダの選択値からパターンIDを生成する 
             var patternId = (function(){
             	var selectedRange = String(ui.values[0]) + String(ui.values[1]);
             	var patternId = "";
@@ -54,7 +63,7 @@ $(function() {
             	return patternId;
             })();
             
-            // パターンIDに対応する見積りデータをグラフに描画する
+            // パターンIDに対応する見積りデータをグラフに描画する 
             for (var i in estimateDataJson.estimateValue) {
             	if (estimateDataJson.estimateValue[i].patternId == patternId) {
             		drawEstimateCanvas(estimateDataJson.estimateValue[i]);
@@ -62,7 +71,7 @@ $(function() {
             	}
             }
             
-            // スライダで指定した範囲に対応するタイトルを作成
+            // スライダで指定した範囲に対応するタイトルを作成 
             var graphTitle = (function() {
             	var title;
             	if (patternId.indexOf("1") ==  patternId.lastIndexOf("1")){
@@ -74,6 +83,18 @@ $(function() {
             	}
             	return title;
             })();
+
+            // 選択範囲内のスライダのキャプションのスタイルを活性化する 
+            for (var i in patternId) {
+            	var index = Number(i) + 1;
+            	if (patternId[i] == "1") {
+            		$("#process_cap_" + index).addClass("process_name_" + index);
+	        		$("#process_cap_" + index).addClass("process_name_base");
+            	} else {
+            		$("#process_cap_" + index).removeClass("process_name_" + index);
+        			$("#process_cap_" + index).removeClass("process_name_base");
+            	}
+            }
 
             $("#graph_title").text(graphTitle);
             
@@ -115,6 +136,7 @@ $(function() {
 				<td><input type="text" size="8" maxlength="5" /></td>
 			</tr>
 		</table>
+		<button id="submit_estimate">ざっくり見積り</button>
 	</fieldset>
 </div>
 
@@ -181,6 +203,96 @@ $(function() {
 <!-- レイアウト調整 -->
 <div class="filler">&nbsp;</div>
 
+<!-- スライダキャプション領域 -->
+<div id="slider_caption_area">
+	<table id="slider_caption_table">
+		<tr>
+			<th><img src="image/ProcessRequirementDefinition.png" width="15px"/></th>
+			<td id="process_cap_1" class="process_name_none">要件定義</td>
+			<th><img src="image/ProcessBasicDesign.png" width="15px"/></th>
+			<td id="process_cap_2" class="process_name_none">基本設計</td>
+			<th><img src="image/ProcessImpl.png" width="15px"/></th>
+			<td id="process_cap_3" class="process_name_none">実装工程</td>
+			<th><img src="image/ProcessTest.png" width="15px"/></th>
+			<td id="process_cap_4" class="process_name_none">テスト工程</td>
+		</tr>
+	</table>
+</div>
+
+<!-- スライダ領域 -->
+<div id="jquery-ui-slider-wrap">
+    <!-- スライダ色の変更は .ui-widget-header -->
+    <!-- スライダのツマミ色の変更は .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default -->
+    <div id="jquery-ui-slider"></div>
+</div>
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+
+<!-- グラフ（凡例）領域 -->
+<div class="estimate_legend_area">
+	<div class="estimate_title">
+		<span id="graph_title">サンプルグラフ</span>
+	</div>
+	<div class="estimate_legend">
+		<fieldset class="legend_field">
+			<legend>凡例</legend>
+			<table class="legend_table">
+				<tr>
+					<th><img src="image/ProcessRequirementDefinition.png" width="15px"/></th>
+					<td>
+						要件定義
+					</td>
+					<th><img src="image/ProcessImpl.png" width="15px"/></th>
+					<td>
+						実装工程
+					</td>
+					<th><img src="image/TermJuas.png" width="15px"/></th>
+					<td>
+						標準工期
+					</td>
+				</tr>
+				<tr>
+					<th><img src="image/ProcessBasicDesign.png" width="15px"/></th>
+					<td>
+						基本設計
+					</td>
+					<th><img src="image/ProcessTest.png" width="15px"/></th>
+					<td>
+						テスト工程
+					</td>
+					<th><img src="image/TermSlim.png" width="15px"/></th>
+					<td>
+						最短開発期間
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
+</div>
+
+<!-- グラフ領域 -->
+<div class="estimate_graph_area">
+
+	<div class="estimate_scale">
+		<!-- グラフY軸の目盛り -->
+		<canvas id="cv_scale" class="scale" width="50" height="270">
+		  <!--Canvas機能に対応していないブラウザへの備え-->
+		  Canvas機能に対応したブラウザでアクセスしてください。
+		</canvas>
+	</div>
+	<div class="estimate_pane">
+		<!-- グラフ本体 -->
+		<canvas id="cv" class="graph" height="270" >
+		  <!--Canvas機能に対応していないブラウザへの備え-->
+		  Canvas機能に対応したブラウザでアクセスしてください。
+		</canvas>
+	</div>
+</div>
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+
 <!-- 工数・工程表示領域 -->
 <div id="process_workmonth_area">
 	<span>工程と工数</span>
@@ -188,13 +300,13 @@ $(function() {
 		<table id="process_workmonth_caption_table">
 			<tr><th rowspan="2">工程</th></tr>
 			<tr></tr>
-			<tr><th>要件定義</th></tr>
-			<tr><th>基本設計</th></tr>
-			<tr><th>詳細設計</th></tr>
-			<tr><th>実装</th></tr>
-			<tr><th>ユニットテスト</th></tr>
-			<tr><th>結合テスト</th></tr>
-			<tr><th>総合テスト</th></tr>
+			<tr><th class="process_name_1">要件定義</th></tr>
+			<tr><th class="process_name_2">基本設計</th></tr>
+			<tr><th class="process_name_3">詳細設計</th></tr>
+			<tr><th class="process_name_3">実装</th></tr>
+			<tr><th class="process_name_3">ユニットテスト</th></tr>
+			<tr><th class="process_name_4">結合テスト</th></tr>
+			<tr><th class="process_name_4">総合テスト</th></tr>
 		</table>
 	</div>
 	<div id="process_workmonth_table_area">
@@ -313,95 +425,6 @@ $(function() {
 	</div>
 </div>
 
-<!-- レイアウト調整 -->
-<div class="filler">&nbsp;</div>
-
-<!-- スライダキャプション領域 -->
-<div id="slider_caption_area">
-	<table id="slider_caption_table">
-		<tr>
-			<th><img src="image/ProcessRequirementDefinition.png" width="15px"/></th>
-			<td>要件定義</td>
-			<th><img src="image/ProcessBasicDesign.png" width="15px"/></th>
-			<td>基本設計</td>
-			<th><img src="image/ProcessImpl.png" width="15px"/></th>
-			<td>実装工程</td>
-			<th><img src="image/ProcessTest.png" width="15px"/></th>
-			<td>テスト工程</td>
-		</tr>
-	</table>
-</div>
-
-<!-- スライダ領域 -->
-<div id="jquery-ui-slider-wrap">
-    <!-- スライダ色の変更は .ui-widget-header -->
-    <!-- スライダのツマミ色の変更は .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default -->
-    <div id="jquery-ui-slider"></div>
-</div>
-
-<!-- レイアウト調整 -->
-<div class="filler">&nbsp;</div>
-
-<!-- グラフ（凡例）領域 -->
-<div class="estimate_legend_area">
-	<div class="estimate_title">
-		<span id="graph_title">サンプルグラフ</span>
-	</div>
-	<div class="estimate_legend">
-		<fieldset class="legend_field">
-			<legend>凡例</legend>
-			<table class="legend_table">
-				<tr>
-					<th><img src="image/ProcessRequirementDefinition.png" width="15px"/></th>
-					<td>
-						要件定義
-					</td>
-					<th><img src="image/ProcessImpl.png" width="15px"/></th>
-					<td>
-						実装工程
-					</td>
-					<th><img src="image/TermJuas.png" width="15px"/></th>
-					<td>
-						標準工期
-					</td>
-				</tr>
-				<tr>
-					<th><img src="image/ProcessBasicDesign.png" width="15px"/></th>
-					<td>
-						基本設計
-					</td>
-					<th><img src="image/ProcessTest.png" width="15px"/></th>
-					<td>
-						テスト工程
-					</td>
-					<th><img src="image/TermSlim.png" width="15px"/></th>
-					<td>
-						最短開発期間
-					</td>
-				</tr>
-			</table>
-		</fieldset>
-	</div>
-</div>
-
-<!-- グラフ領域 -->
-<div class="estimate_graph_area">
-
-	<div class="estimate_scale">
-		<!-- グラフY軸の目盛り -->
-		<canvas id="cv_scale" class="scale" width="50" height="270">
-		  <!--Canvas機能に対応していないブラウザへの備え-->
-		  Canvas機能に対応したブラウザでアクセスしてください。
-		</canvas>
-	</div>
-	<div class="estimate_pane">
-		<!-- グラフ本体 -->
-		<canvas id="cv" class="graph" height="270" >
-		  <!--Canvas機能に対応していないブラウザへの備え-->
-		  Canvas機能に対応したブラウザでアクセスしてください。
-		</canvas>
-	</div>
-</div>
 
 </body>
 </html>

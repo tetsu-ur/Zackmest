@@ -17,7 +17,7 @@
 	
 <script type="text/javascript">
 
-var PROCESS_CODE = {1:"要件定義", 2:"基本設計", 3:"詳細設計", 4:"テスト"};
+var PROCESS_CODE = {1:"要件定義", 2:"基本設計", 3:"詳細設計", 4:"結合テスト"};
 
 /* onload によってグラフを描画する */
 window.onload = function() {
@@ -87,8 +87,238 @@ $(function() {
 </head>
 <body>
 
-<div class="slider_caption_area">
-	<table class="slider_caption_table">
+<!-- ざっくり条件指定領域 -->
+<div id="calc_condition_area">
+	<fieldset id="calc_condition_field">
+		<legend>ざっくり条件指定</legend>
+		<table id="calc_condition_table_left" class="lookgood_table">
+			<tr>
+				<th>プログラムサイズ(Ks)</th>
+				<td><input type="text" size="8" maxlength="5" /></td>
+			</tr>
+			<tr>
+				<th>ファンクションポイント数</th>
+				<td><input type="text" size="8" maxlength="5" /></td>
+			</tr>
+			<tr>
+				<th>生産性(Ks)</th>
+				<td><input type="text" size="8" maxlength="5" /></td>
+			</tr>
+		</table>
+		<table id="calc_condition_table_right" class="lookgood_table">
+			<tr>
+				<th>開発期間(月)</th>
+				<td><input type="text" size="8" maxlength="5" /></td>
+			</tr>
+			<tr>
+				<th>工数(人月)</th>
+				<td><input type="text" size="8" maxlength="5" /></td>
+			</tr>
+		</table>
+	</fieldset>
+</div>
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+
+<!-- 基礎数値表示領域 -->
+<div id="base_value_area">
+	<div id="base_value_left_pane">
+		<div>
+			<span>作業工数</span>
+			<table id="" class="lookgood_table">
+				<tr>
+					<th>工数を月で分割</th>
+					<td>5.56 人月</td>
+				</tr>
+			</table>
+		</div>
+
+		<!-- レイアウト調整 -->
+		<div class="filler">&nbsp;</div>
+
+		<div>
+			<span>工期の妥当性評価</span>
+			<table id="" class="lookgood_table">
+				<tr>
+					<th>最短開発期間</th>
+					<td>7.7 ヶ月</td>
+				</tr>
+				<tr>
+					<th>標準工期</th>
+					<td>5.8 ヶ月</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div id="base_value_right_pane">
+		<span>規模予測</span>
+		<table id="" class="lookgood_table">
+			<tr>
+				<th>プログラムサイズ</th>
+				<td>30 Ks</td>
+			</tr>
+			<tr>
+				<th>ファンクションポイント数</th>
+				<td>5.8 FP</td>
+			</tr>
+			<tr>
+				<th>生産性</th>
+				<td>1 Ks</td>
+			</tr>
+			<tr>
+				<th>開発期間</th>
+				<td>6 ヶ月</td>
+			</tr>
+			<tr>
+				<th>工数</th>
+				<td>33 人月</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+
+<!-- 工数・工程表示領域 -->
+<div id="process_workmonth_area">
+	<span>工程と工数</span>
+	<div id="process_workmonth_caption_table_area">
+		<table id="process_workmonth_caption_table">
+			<tr><th rowspan="2">工程</th></tr>
+			<tr></tr>
+			<tr><th>要件定義</th></tr>
+			<tr><th>基本設計</th></tr>
+			<tr><th>詳細設計</th></tr>
+			<tr><th>実装</th></tr>
+			<tr><th>ユニットテスト</th></tr>
+			<tr><th>結合テスト</th></tr>
+			<tr><th>総合テスト</th></tr>
+		</table>
+	</div>
+	<div id="process_workmonth_table_area">
+		<div id="process_workmonth_table_area_inner">
+			<table class="process_workmonth_table">
+				<tr><th colspan="3">要件定義〜総合テスト</th></tr>
+				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
+				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
+				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
+				<tr><td rowspan="3">1.8</td><td rowspan="3">13.8</td><td rowspan="3">7.7</td></tr>
+				<tr></tr>
+				<tr></tr>
+				<tr><td rowspan="2">1.7</td><td rowspan="2">7.8</td><td rowspan="2">4.9</td></tr>
+				<tr></tr>
+			</table>
+			<table class="process_workmonth_table">
+				<tr><th colspan="3">基本設計〜総合テスト</th></tr>
+				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
+				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
+				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
+				<tr><td rowspan="3">1.8</td><td rowspan="3">13.8</td><td rowspan="3">7.7</td></tr>
+				<tr></tr>
+				<tr></tr>
+				<tr><td rowspan="2">1.7</td><td rowspan="2">7.8</td><td rowspan="2">4.9</td></tr>
+				<tr></tr>
+			</table>
+			<table class="process_workmonth_table">
+				<tr><th colspan="3">詳細設計〜総合テスト</th></tr>
+				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
+				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
+				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
+				<tr><td rowspan="3">1.8</td><td rowspan="3">13.8</td><td rowspan="3">7.7</td></tr>
+				<tr></tr>
+				<tr></tr>
+				<tr><td rowspan="2">1.7</td><td rowspan="2">7.8</td><td rowspan="2">4.9</td></tr>
+				<tr></tr>
+			</table>
+			<table class="process_workmonth_table">
+				<tr><th colspan="3">基本設計〜総合テスト</th></tr>
+				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
+				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
+				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
+				<tr><td rowspan="3">1.8</td><td rowspan="3">13.8</td><td rowspan="3">7.7</td></tr>
+				<tr></tr>
+				<tr></tr>
+				<tr><td rowspan="2">1.7</td><td rowspan="2">7.8</td><td rowspan="2">4.9</td></tr>
+				<tr></tr>
+			</table>
+			<table class="process_workmonth_table">
+				<tr><th colspan="3">詳細設計〜総合テスト</th></tr>
+				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
+				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
+				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
+				<tr><td rowspan="3">1.8</td><td rowspan="3">13.8</td><td rowspan="3">7.7</td></tr>
+				<tr></tr>
+				<tr></tr>
+				<tr><td rowspan="2">1.7</td><td rowspan="2">7.8</td><td rowspan="2">4.9</td></tr>
+				<tr></tr>
+			</table>
+			<table class="process_workmonth_table">
+				<tr><th colspan="3">要件定義〜総合テスト</th></tr>
+				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
+				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
+				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
+				<tr><td rowspan="3">1.8</td><td rowspan="3">13.8</td><td rowspan="3">7.7</td></tr>
+				<tr></tr>
+				<tr></tr>
+				<tr><td rowspan="2">1.7</td><td rowspan="2">7.8</td><td rowspan="2">4.9</td></tr>
+				<tr></tr>
+			</table>
+			<table class="process_workmonth_table">
+				<tr><th colspan="3">基本設計〜総合テスト</th></tr>
+				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
+				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
+				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
+				<tr><td rowspan="3">1.8</td><td rowspan="3">13.8</td><td rowspan="3">7.7</td></tr>
+				<tr></tr>
+				<tr></tr>
+				<tr><td rowspan="2">1.7</td><td rowspan="2">7.8</td><td rowspan="2">4.9</td></tr>
+				<tr></tr>
+			</table>
+			<table class="process_workmonth_table">
+				<tr><th colspan="3">詳細設計〜総合テスト</th></tr>
+				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
+				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
+				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
+				<tr><td rowspan="3">1.8</td><td rowspan="3">13.8</td><td rowspan="3">7.7</td></tr>
+				<tr></tr>
+				<tr></tr>
+				<tr><td rowspan="2">1.7</td><td rowspan="2">7.8</td><td rowspan="2">4.9</td></tr>
+				<tr></tr>
+			</table>
+			<table class="process_workmonth_table">
+				<tr><th colspan="3">基本設計〜総合テスト</th></tr>
+				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
+				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
+				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
+				<tr><td rowspan="3">1.8</td><td rowspan="3">13.8</td><td rowspan="3">7.7</td></tr>
+				<tr></tr>
+				<tr></tr>
+				<tr><td rowspan="2">1.7</td><td rowspan="2">7.8</td><td rowspan="2">4.9</td></tr>
+				<tr></tr>
+			</table>
+			<table class="process_workmonth_table">
+				<tr><th colspan="3">詳細設計〜総合テスト</th></tr>
+				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
+				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
+				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
+				<tr><td rowspan="3">1.8</td><td rowspan="3">13.8</td><td rowspan="3">7.7</td></tr>
+				<tr></tr>
+				<tr></tr>
+				<tr><td rowspan="2">1.7</td><td rowspan="2">7.8</td><td rowspan="2">4.9</td></tr>
+				<tr></tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+
+<!-- スライダキャプション領域 -->
+<div id="slider_caption_area">
+	<table id="slider_caption_table">
 		<tr>
 			<th><img src="image/ProcessRequirementDefinition.png" width="15px"/></th>
 			<td>要件定義</td>
@@ -102,12 +332,17 @@ $(function() {
 	</table>
 </div>
 
+<!-- スライダ領域 -->
 <div id="jquery-ui-slider-wrap">
     <!-- スライダ色の変更は .ui-widget-header -->
     <!-- スライダのツマミ色の変更は .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default -->
     <div id="jquery-ui-slider"></div>
 </div>
 
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+
+<!-- グラフ（凡例）領域 -->
 <div class="estimate_legend_area">
 	<div class="estimate_title">
 		<span id="graph_title">サンプルグラフ</span>
@@ -149,6 +384,7 @@ $(function() {
 	</div>
 </div>
 
+<!-- グラフ領域 -->
 <div class="estimate_graph_area">
 
 	<div class="estimate_scale">

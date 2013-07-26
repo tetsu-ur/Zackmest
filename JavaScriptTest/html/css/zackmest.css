@@ -2,43 +2,118 @@
 
 /* border:1px solid #000000; */
 
-/** jQuery スライダ **/
-/*
-#jquery-ui-slider {
-    margin: 10px;
-}
-*/
+/* フィラー */
+div.filler {height:20px; clear:both;}
 
-/* #jquery-ui-slider-wrap {
-    padding: 5px;
-    text-align: center;
-    width: 500px;
-    border: 1px solid gray;
-    border-radius: 10px;
-    background: #f0f0f0;
+/* -------------------- ざっくり条件指定欄 -------------------- */
+div#calc_condition_area {width: 800px;}
+fieldset#calc_condition_field {padding-left:30px; padding-right:30px;}
+table#calc_condition_table_left {width: 350px; float:left;}
+table#calc_condition_table_right {width:350px; float:right;}
+
+div#calc_condition_area td {width: 110px; text-align: right;}
+div#calc_condition_area input[type=text] {text-align: right; padding-right: 5px;}
+
+table.lookgood_table {
+	border: 1px solid #b0b0b0;
+	border-spacing: 2px;
+	border-width: 2px;
+	text-align:left;
+	font-size: 14px;
+
+	/* 角を丸くする */
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
 }
+
+table.lookgood_table th,td {
+	border-bottom: 1px solid #CCC;
+	padding: 0px 5px 0px 5px;
+}
+
+table.lookgood_table th {
+/* 
+	background-color: orange;
  */
- #jquery-ui-slider-wrap {
-    padding: 5px;
-    width: 650px;
-}
- 
-#jquery-ui-slider {
-    margin: 10px auto;
-    height: 15px;
+ 	background-image: -moz-linear-gradient(left, #ffffff, #ffc75c); /* Firefox */
+	font-weight: normal;
+	width: 170px;
+	border-right: 1px solid #CCC;
 }
 
-/* スライダキャプション */
-div.slider_caption_area {width:800px;}
-table.slider_caption_table {};
-table.slider_caption_table th {width:40px;}
-table.slider_caption_table td {width:140px; border:1px solid black;}
+/* -------------------- 基礎数値表示領域 -------------------- */
+div#base_value_area th {
+	width: 150px; 
+ 	background-image: -moz-linear-gradient(left, #ffffff, #AABBAA); /* Firefox */
+}
+div#base_value_area tr {height: 20px;}
+div#base_value_area td {width: 80px; text-align: right;}
+
+div#base_value_area {width: 800px;}
+div#base_value_left_pane {width: 350px; float:left;}
+div#base_value_right_pane {width:350px; float:right;}
+
+/* -------------------- 工数・工程表示領域 -------------------- */
+div#process_workmonth_area {width: 800px;}
+
+/* 工数・工程テーブル左端項目名称 */
+table#process_workmonth_caption_table {
+	float: left;
+	border: 1px solid #b0b0b0;
+	border-spacing: 2px;
+	border-width: 2px;
+	text-align:left;
+	font-size: 14px;
+
+	/* 角を丸くする */
+	border-radius: 12px 0px 0px 12px;
+}
+table#process_workmonth_caption_table tr {height: 20px;}
+table#process_workmonth_caption_table th {
+	width: 110px; 
+	font-weight: normal;
+ 	background-image: -moz-linear-gradient(left, #ffffff, #AABBAA); /* Firefox */
+}
+
+/* 工数・工程見積り値テーブル */
+div#process_workmonth_table_area {overflow:auto; width: 642px; }
+div#process_workmonth_table_area_inner {overflow:auto; width: 2140px; }
+table.process_workmonth_table {
+	float: left;
+	border-top: 1px solid #b0b0b0;
+	border-bottom: 1px solid #b0b0b0;
+	border-right: 1px solid #b0b0b0;
+	border-spacing: 2px;
+	border-width: 2px;
+	text-align:left;
+	font-size: 14px;
+
+}
+table.process_workmonth_table tr {height: 20px;}
+table.process_workmonth_table th {
+	width: 66px;
+	text-align: center;
+	font-weight: normal;
+ 	background-color: #c0d0c0; /* Firefox */
+	font-size: 14px;
+}
+table.process_workmonth_table td {text-align: right; padding-right: 5px;}
+
+/* -------------------- スライダキャプション -------------------- */
+div#slider_caption_area {width:800px;}
+table#slider_caption_table th {width:40px;}
+table#slider_caption_table td {width:115px; padding:0px; border:1px solid black;}
+
+/* -------------------- jQuery スライダ -------------------- */
+#jquery-ui-slider-wrap {padding: 5px; width: 650px;}
+#jquery-ui-slider {margin: 10px auto; height: 15px;}
 
 #jquery-ui-slider-wrap .ui-widget-header {bakground: none repeat-x scroll 50% 50% #CCCCFF;}
 .ui-slider-range { background: #B8BFFF; }
 .ui-slider .ui-slider-handle { border-color: #888FCF; border-width:2px;}
 
-/* グラフタイトルおよび凡例 */
+/* -------------------- グラフタイトルおよび凡例 -------------------- */
 div.estimate_legend_area {width:800px; height:90px;}
 div.estimate_title {width:310px; float:left; text-align:center;}
 div.estimate_legend {width:450px;  float:left; }
@@ -46,12 +121,10 @@ div.estimate_legend {width:450px;  float:left; }
 span#graph_title { font-size: 20px; border:1px solid #000000;}
 fieldset.legend_field {width:450px; padding:5px;}
 table.legend_table {width:450px; }
-table.legend_table th {width:40px;}
+table.legend_table th {width:40px; text-align:center;}
 table.legend_table td {width:110px;}
 
-
-
-/* 見積りグラフ */
+/* -------------------- 見積りグラフ -------------------- */
 div.estimate_graph_area  {width:800px; table-layout: fixed; clear:both;}
 div.estimate_scale  {width:50px;  float: left;}
 div.estimate_pane   {width:750px; float: right; overflow:auto;}

@@ -2,6 +2,9 @@
 
 /* border:1px solid #000000; */
 
+/* Web定規 */
+div.ruler {width:100px; border:1px solid #000; text-align: center; float: left;}
+
 /* フィラー */
 div.filler {height:20px; clear:both;}
 
@@ -45,6 +48,8 @@ table.lookgood_table th {
 button#submit_estimate{ font-size: 14px; height:30px; float: right; margin-top: 10px;}
 
 /* -------------------- 基礎数値表示領域 -------------------- */
+div.table_title {height: 20px;}
+span.title {border-left: 4px solid #000000; font-size: 16px; padding-left: 3px;}
 div#base_value_area th {
 	width: 150px; 
  	background-image: -moz-linear-gradient(left, #ffffff, #AABBAA); /* Firefox */
@@ -56,10 +61,16 @@ div#base_value_area {width: 800px;}
 div#base_value_left_pane {width: 350px; float:left;}
 div#base_value_right_pane {width:350px; float:right;}
 
-/* -------------------- スライダキャプション -------------------- */
-div#slider_caption_area {width:800px;}
-table#slider_caption_table th {width:40px;}
-table#slider_caption_table td {width:115px; padding:0px; }
+/* -------------------- グラフタイトル -------------------- */
+div.estimate_title  {width:500px; text-align: left; padding-left: 10px;}
+span#graph_title {font-size: 24px; text-shadow: #888 2px 2px 2px;}
+
+/* -------------------- グラフ領域 -------------------- */
+/* スライダキャプション */
+div#slider_area {width:550px; float:left; padding-top:10px;}
+div#slider_caption_area {width:550px;}
+table#slider_caption_table th {width:35px;}
+table#slider_caption_table td {width:95px; padding:0px; }
 
 td.process_name_none {
 	border:1px solid white;
@@ -73,38 +84,36 @@ td.process_name_base {
 }
 
 td.process_name_1 { /* 要件定義 */
-	background-image: -moz-linear-gradient(left -70deg, #ffffff, #ff4444 ); /* Firefox */
+	background-image: -moz-linear-gradient(left -70deg, #ffffff, #ff6666 ); /* Firefox */
 }
 td.process_name_2 { /* 基本設計 */
-	background-image: -moz-linear-gradient(left -70deg, #ffffff, #ffff44 ); /* Firefox */
+	background-image: -moz-linear-gradient(left -70deg, #ffffff, #ffff66 ); /* Firefox */
 }
 td.process_name_3 { /* 詳細設計 */
-	background-image: -moz-linear-gradient(left -70deg, #ffffff, #44ff44 ); /* Firefox */
+	background-image: -moz-linear-gradient(left -70deg, #ffffff, #66ff66 ); /* Firefox */
 }
 td.process_name_4 { /* 結合テスト */
-	background-image: -moz-linear-gradient(left -70deg, #ffffff, #4444ff ); /* Firefox */
+	background-image: -moz-linear-gradient(left -70deg, #ffffff, #6666ff ); /* Firefox */
 }
 
-/* -------------------- jQuery スライダ -------------------- */
-#jquery-ui-slider-wrap {padding: 5px; width: 650px;}
+/* スライダ */
+#jquery-ui-slider-wrap {padding: 5px; width: 550px; float: left;}
 #jquery-ui-slider {margin: 10px auto; height: 15px;}
 
 #jquery-ui-slider-wrap .ui-widget-header {bakground: none repeat-x scroll 50% 50% #CCCCFF;}
 .ui-slider-range { background: #B8BFFF; }
 .ui-slider .ui-slider-handle { border-color: #888FCF; border-width:2px;}
 
-/* -------------------- グラフタイトルおよび凡例 -------------------- */
+/* 凡例 */
 div.estimate_legend_area {width:800px; height:90px;}
-div.estimate_title {width:310px; float:left; text-align:center;}
-div.estimate_legend {width:450px;  float:left; }
+div.estimate_legend {width:130px; float:right; padding-right: 60px;}
 
-span#graph_title { font-size: 20px; border:1px solid #000000;}
-fieldset.legend_field {width:450px; padding:5px;}
-table.legend_table {width:450px; }
-table.legend_table th {width:40px; text-align:center;}
-table.legend_table td {width:110px;}
+fieldset.legend_field {width:150px; padding:5px;}
+table.legend_table {width:150px; }
+table.legend_table th {width:30px; text-align:center;}
+table.legend_table td {width:100px;}
 
-/* -------------------- 見積りグラフ -------------------- */
+/* 見積りグラフ */
 div.estimate_graph_area  {width:800px; table-layout: fixed; clear:both;}
 div.estimate_scale  {width:50px;  float: left;}
 div.estimate_pane   {width:750px; float: right; overflow:auto;}
@@ -149,13 +158,22 @@ table.process_workmonth_table {
 
 }
 table.process_workmonth_table tr {height: 20px;}
+
 table.process_workmonth_table th {
 	width: 66px;
 	text-align: center;
 	font-weight: normal;
- 	background-color: #c0d0c0; /* Firefox */
+ 	background-color: #c0d0c0;
 	font-size: 14px;
 }
+table.process_workmonth_table th.table_active {
+	width: 66px;
+	text-align: center;
+	font-weight: normal;
+ 	background-color: #ffc75c;
+	font-size: 14px;
+}
+
 table.process_workmonth_table td {text-align: right; padding-right: 5px;}
 
 #process_workmonth_caption_table .process_name_1 {

@@ -63,10 +63,17 @@ $(function() {
             	return patternId;
             })();
             
-            // パターンIDに対応する見積りデータをグラフに描画する 
+            // パターンIDに対応する見積データのグラフ描画と工程・工数領域への選択状態反映 
             for (var i in estimateDataJson.estimateValue) {
+            	
             	if (estimateDataJson.estimateValue[i].patternId == patternId) {
             		drawEstimateCanvas(estimateDataJson.estimateValue[i]);
+
+            		// 工程・工数領域のスクロール位置と選択状態の表のアクティブ化 
+            		$("#process_workmonth_table_area").scrollLeft(i * 214);
+            		$("#process_workmonth_table_area_inner th").removeClass("table_active");
+            		var str = "#process_workmonth_table_area_inner table:nth-of-type(" + (Number(i) + 1) + ") th";
+	        		$(str).addClass("table_active");
             		break;
             	}
             }
@@ -81,7 +88,7 @@ $(function() {
                 	title += " 〜 "
                 	title += PROCESS_CODE[patternId.lastIndexOf("1") + 1];
             	}
-            	return title;
+            	return title + " 工程工数グラフ";
             })();
 
             // 選択範囲内のスライダのキャプションのスタイルを活性化する 
@@ -107,6 +114,17 @@ $(function() {
 
 </head>
 <body>
+
+<!-- Web定規 -->
+<div class="ruler_area">
+	<div class="ruler">1</div><div class="ruler">2</div><div class="ruler">3</div>
+	<div class="ruler">4</div><div class="ruler">5</div>
+	<div class="ruler">6</div><div class="ruler">7</div><div class="ruler">8</div>
+	<div class="ruler">9</div><div class="ruler">10</div>
+</div>
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
 
 <!-- ざっくり条件指定領域 -->
 <div id="calc_condition_area">
@@ -147,7 +165,7 @@ $(function() {
 <div id="base_value_area">
 	<div id="base_value_left_pane">
 		<div>
-			<span>作業工数</span>
+			<div class="table_title"><span class="title">作業工数</span></div>
 			<table id="" class="lookgood_table">
 				<tr>
 					<th>工数を月で分割</th>
@@ -160,7 +178,7 @@ $(function() {
 		<div class="filler">&nbsp;</div>
 
 		<div>
-			<span>工期の妥当性評価</span>
+			<div class="table_title"><span class="title">工期の妥当性評価</span></div>
 			<table id="" class="lookgood_table">
 				<tr>
 					<th>最短開発期間</th>
@@ -174,7 +192,7 @@ $(function() {
 		</div>
 	</div>
 	<div id="base_value_right_pane">
-		<span>規模予測</span>
+		<div class="table_title"><span class="title">規模予測</span></div>
 		<table id="" class="lookgood_table">
 			<tr>
 				<th>プログラムサイズ</th>
@@ -202,65 +220,51 @@ $(function() {
 
 <!-- レイアウト調整 -->
 <div class="filler">&nbsp;</div>
-
-<!-- スライダキャプション領域 -->
-<div id="slider_caption_area">
-	<table id="slider_caption_table">
-		<tr>
-			<th><img src="image/ProcessRequirementDefinition.png" width="15px"/></th>
-			<td id="process_cap_1" class="process_name_none">要件定義</td>
-			<th><img src="image/ProcessBasicDesign.png" width="15px"/></th>
-			<td id="process_cap_2" class="process_name_none">基本設計</td>
-			<th><img src="image/ProcessImpl.png" width="15px"/></th>
-			<td id="process_cap_3" class="process_name_none">実装工程</td>
-			<th><img src="image/ProcessTest.png" width="15px"/></th>
-			<td id="process_cap_4" class="process_name_none">テスト工程</td>
-		</tr>
-	</table>
-</div>
-
-<!-- スライダ領域 -->
-<div id="jquery-ui-slider-wrap">
-    <!-- スライダ色の変更は .ui-widget-header -->
-    <!-- スライダのツマミ色の変更は .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default -->
-    <div id="jquery-ui-slider"></div>
-</div>
-
-<!-- レイアウト調整 -->
 <div class="filler">&nbsp;</div>
 
+<div class="estimate_title">
+	<span id="graph_title">工程工数グラフ</span>
+</div>
+ 
 <!-- グラフ（凡例）領域 -->
 <div class="estimate_legend_area">
-	<div class="estimate_title">
-		<span id="graph_title">サンプルグラフ</span>
+	
+	<div id="slider_area">
+		<!-- スライダキャプション領域 -->
+		<div id="slider_caption_area">
+			<table id="slider_caption_table">
+				<tr>
+					<th><img src="image/ProcessRequirementDefinition.png" width="15px"/></th>
+					<td id="process_cap_1" class="process_name_none">要件定義</td>
+					<th><img src="image/ProcessBasicDesign.png" width="15px"/></th>
+					<td id="process_cap_2" class="process_name_none">基本設計</td>
+					<th><img src="image/ProcessImpl.png" width="15px"/></th>
+					<td id="process_cap_3" class="process_name_none">実装</td>
+					<th><img src="image/ProcessTest.png" width="15px"/></th>
+					<td id="process_cap_4" class="process_name_none">結合テスト</td>
+				</tr>
+			</table>
+		</div>
+		
+		<!-- スライダ領域 -->
+		<div id="jquery-ui-slider-wrap">
+		    <!-- スライダ色の変更は .ui-widget-header -->
+		    <!-- スライダのツマミ色の変更は .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default -->
+		    <div id="jquery-ui-slider"></div>
+		</div>
 	</div>
+
 	<div class="estimate_legend">
 		<fieldset class="legend_field">
 			<legend>凡例</legend>
 			<table class="legend_table">
 				<tr>
-					<th><img src="image/ProcessRequirementDefinition.png" width="15px"/></th>
-					<td>
-						要件定義
-					</td>
-					<th><img src="image/ProcessImpl.png" width="15px"/></th>
-					<td>
-						実装工程
-					</td>
 					<th><img src="image/TermJuas.png" width="15px"/></th>
 					<td>
 						標準工期
 					</td>
 				</tr>
 				<tr>
-					<th><img src="image/ProcessBasicDesign.png" width="15px"/></th>
-					<td>
-						基本設計
-					</td>
-					<th><img src="image/ProcessTest.png" width="15px"/></th>
-					<td>
-						テスト工程
-					</td>
 					<th><img src="image/TermSlim.png" width="15px"/></th>
 					<td>
 						最短開発期間
@@ -295,7 +299,7 @@ $(function() {
 
 <!-- 工数・工程表示領域 -->
 <div id="process_workmonth_area">
-	<span>工程と工数</span>
+	<div class="table_title"><span class="title">工程と工数</span></div>
 	<div id="process_workmonth_caption_table_area">
 		<table id="process_workmonth_caption_table">
 			<tr><th rowspan="2">工程</th></tr>
@@ -312,7 +316,7 @@ $(function() {
 	<div id="process_workmonth_table_area">
 		<div id="process_workmonth_table_area_inner">
 			<table class="process_workmonth_table">
-				<tr><th colspan="3">要件定義〜総合テスト</th></tr>
+				<tr><th colspan="3">要件定義〜結合テスト</th></tr>
 				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
 				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
 				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
@@ -323,7 +327,7 @@ $(function() {
 				<tr></tr>
 			</table>
 			<table class="process_workmonth_table">
-				<tr><th colspan="3">基本設計〜総合テスト</th></tr>
+				<tr><th colspan="3">要件定義〜詳細設計</th></tr>
 				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
 				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
 				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
@@ -334,7 +338,7 @@ $(function() {
 				<tr></tr>
 			</table>
 			<table class="process_workmonth_table">
-				<tr><th colspan="3">詳細設計〜総合テスト</th></tr>
+				<tr><th colspan="3">要件定義〜基本設計</th></tr>
 				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
 				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
 				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
@@ -345,7 +349,7 @@ $(function() {
 				<tr></tr>
 			</table>
 			<table class="process_workmonth_table">
-				<tr><th colspan="3">基本設計〜総合テスト</th></tr>
+				<tr><th colspan="3">要件定義</th></tr>
 				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
 				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
 				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
@@ -356,7 +360,7 @@ $(function() {
 				<tr></tr>
 			</table>
 			<table class="process_workmonth_table">
-				<tr><th colspan="3">詳細設計〜総合テスト</th></tr>
+				<tr><th colspan="3">基本設計〜結合テスト</th></tr>
 				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
 				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
 				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
@@ -367,7 +371,7 @@ $(function() {
 				<tr></tr>
 			</table>
 			<table class="process_workmonth_table">
-				<tr><th colspan="3">要件定義〜総合テスト</th></tr>
+				<tr><th colspan="3">基本設計〜詳細設計</th></tr>
 				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
 				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
 				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
@@ -378,7 +382,7 @@ $(function() {
 				<tr></tr>
 			</table>
 			<table class="process_workmonth_table">
-				<tr><th colspan="3">基本設計〜総合テスト</th></tr>
+				<tr><th colspan="3">基本設計</th></tr>
 				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
 				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
 				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
@@ -389,7 +393,7 @@ $(function() {
 				<tr></tr>
 			</table>
 			<table class="process_workmonth_table">
-				<tr><th colspan="3">詳細設計〜総合テスト</th></tr>
+				<tr><th colspan="3">詳細設計〜結合テスト</th></tr>
 				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
 				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
 				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
@@ -400,7 +404,7 @@ $(function() {
 				<tr></tr>
 			</table>
 			<table class="process_workmonth_table">
-				<tr><th colspan="3">基本設計〜総合テスト</th></tr>
+				<tr><th colspan="3">詳細設計</th></tr>
 				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
 				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
 				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
@@ -411,7 +415,7 @@ $(function() {
 				<tr></tr>
 			</table>
 			<table class="process_workmonth_table">
-				<tr><th colspan="3">詳細設計〜総合テスト</th></tr>
+				<tr><th colspan="3">結合テスト</th></tr>
 				<tr><th>工期(月)</th><th>工数(工程)</th><th>工数(月)</th></tr>
 				<tr><td>1.1</td><td>3.2</td><td>2.9</td></tr>
 				<tr><td>1.5</td><td>8.6</td><td>5.7</td></tr>
@@ -425,6 +429,13 @@ $(function() {
 	</div>
 </div>
 
+<!-- Web定規 -->
+<div class="ruler_area">
+	<div class="ruler">1</div><div class="ruler">2</div><div class="ruler">3</div>
+	<div class="ruler">4</div><div class="ruler">5</div>
+	<div class="ruler">6</div><div class="ruler">7</div><div class="ruler">8</div>
+	<div class="ruler">9</div><div class="ruler">10</div>
+</div>
 
 </body>
 </html>

@@ -3,10 +3,14 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-	<!-- jQuery と jQuery UI をインポート -->
+	<!-- jQuery と jQuery UI -->
 	<link rel="stylesheet" href="lib/themes/base/jquery.ui.all.css" />
 	<script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
 	<script type="text/javascript" src="lib/ui/jquery-ui.js"></script>
+
+	<!-- レーダチャート -->
+	<script type="text/javascript" src="lib/excanvas.js"></script>
+	<script type="text/javascript" src="lib/jquery.canvasChart.js"></script>
 
 	<!-- テストデータ -->
 	<script type="text/javascript" src="../estimate_test_data.js"></script>
@@ -108,6 +112,23 @@ $(function() {
         }
     } );
     
+	$('#chart_graph').canvasChart({
+		polygon : 5,
+		valuation : 10,//評価値 
+		valuationCntPrint : false,//評価の数値表記 
+		radius : 80,//半径 
+		bgFill : true,//背景の塗り 
+		bgFillColor : '#f0f0f0',
+		bgStroke : false,
+		bgStrokeColor: '#cccccc',
+		chartStrokeColor : ['#f99','#99f'],//チャートの線 
+		chartFillColor : ['rgba(200, 150, 150, 0.5)','rgba(150, 150, 200, 0.5)'],//チャートの塗り
+		valuationName : ['プログラムサイズ', 'FP数', '生産性', '開発期間', '工数'],
+		                 
+		chartPointSize : [5],//チャートの点サイズ 
+		gauge : true,//中央からのゲージライン描画 
+		scale : true,//ゲージラインの目盛り描画 
+	});
 //    jQuery('#jquery-ui-slider-values-1').val(jQuery('#jquery-ui-slider').slider('values',1 ));
 } );
 </script> 
@@ -126,40 +147,49 @@ $(function() {
 <!-- レイアウト調整 -->
 <div class="filler">&nbsp;</div>
 
+<!-- 条件入力タイトル領域 -->
+<div class="estimate_title">
+	<img src="image/icon_4b_48.png" width="30px"/>
+	<span class="section_title">ざっくり条件指定</span>
+</div>
+
 <!-- ざっくり条件指定領域 -->
 <div id="calc_condition_area">
-	<fieldset id="calc_condition_field">
-		<legend>ざっくり条件指定</legend>
-		<table id="calc_condition_table_left" class="lookgood_table">
-			<tr>
-				<th>プログラムサイズ(Ks)</th>
-				<td><input type="text" size="8" maxlength="5" /></td>
-			</tr>
-			<tr>
-				<th>ファンクションポイント数</th>
-				<td><input type="text" size="8" maxlength="5" /></td>
-			</tr>
-			<tr>
-				<th>生産性(Ks)</th>
-				<td><input type="text" size="8" maxlength="5" /></td>
-			</tr>
-		</table>
-		<table id="calc_condition_table_right" class="lookgood_table">
-			<tr>
-				<th>開発期間(月)</th>
-				<td><input type="text" size="8" maxlength="5" /></td>
-			</tr>
-			<tr>
-				<th>工数(人月)</th>
-				<td><input type="text" size="8" maxlength="5" /></td>
-			</tr>
-		</table>
-		<button id="submit_estimate">ざっくり見積り</button>
-	</fieldset>
+	<table id="calc_condition_table_left" class="lookgood_table">
+		<tr>
+			<th>プログラムサイズ(Ks)</th>
+			<td><input type="text" size="8" maxlength="5" /></td>
+		</tr>
+		<tr>
+			<th>ファンクションポイント数</th>
+			<td><input type="text" size="8" maxlength="5" /></td>
+		</tr>
+		<tr>
+			<th>生産性(Ks)</th>
+			<td><input type="text" size="8" maxlength="5" /></td>
+		</tr>
+	</table>
+	<table id="calc_condition_table_right" class="lookgood_table">
+		<tr>
+			<th>開発期間(月)</th>
+			<td><input type="text" size="8" maxlength="5" /></td>
+		</tr>
+		<tr>
+			<th>工数(人月)</th>
+			<td><input type="text" size="8" maxlength="5" /></td>
+		</tr>
+	</table>
+	<button id="submit_estimate">ざっくり見積り</button>
 </div>
 
 <!-- レイアウト調整 -->
 <div class="filler">&nbsp;</div>
+
+<!-- 基礎数値タイトル領域 -->
+<div class="estimate_title">
+	<img src="image/icon_3g_48.png" width="30px"/>
+	<span class="section_title">基礎数値</span>
+</div>
 
 <!-- 基礎数値表示領域 -->
 <div id="base_value_area">
@@ -174,9 +204,8 @@ $(function() {
 			</table>
 		</div>
 
-		<!-- レイアウト調整 -->
-		<div class="filler">&nbsp;</div>
-
+	</div>
+	<div id="base_value_right_pane">
 		<div>
 			<div class="table_title"><span class="title">工期の妥当性評価</span></div>
 			<table id="" class="lookgood_table">
@@ -191,7 +220,13 @@ $(function() {
 			</table>
 		</div>
 	</div>
-	<div id="base_value_right_pane">
+</div>
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+
+<div id="base_value_area">
+	<div id="base_value_left_pane">
 		<div class="table_title"><span class="title">規模予測</span></div>
 		<table id="" class="lookgood_table">
 			<tr>
@@ -216,14 +251,50 @@ $(function() {
 			</tr>
 		</table>
 	</div>
+	<div id="base_value_graph_pane">
+		<div class="table_title"><span class="title">入力値／計算値比較グラフ</span></div>
+		<div id="chart_graph">
+			<canvas width="210" height="200"></canvas>
+			<div class="chartInput">
+				<input type="hidden" value="10" id="input1" name="input1" />
+				<input type="hidden" value="10" id="input2" name="input2" />
+				<input type="hidden" value="6" id="input3" name="input3" />
+				<input type="hidden" value="10" id="input4" name="input4" />
+				<input type="hidden" value="10" id="input5" name="input5" />
+			</div>
+			<div class="chartInput">
+				<input type="hidden" value="9" id="input1" name="input1" />
+				<input type="hidden" value="7" id="input2" name="input2" />
+				<input type="hidden" value="10" id="input3" name="input3" />
+				<input type="hidden" value="6" id="input4" name="input4" />
+				<input type="hidden" value="4" id="input5" name="input5" />
+			</div>
+		</div>
+	</div>
+	<div id="base_value_graph_legend_pane">
+		<fieldset id="base_value_graph_legend_field">
+			<legend>凡例</legend>
+			<table id="base_value_graph_legend_table">
+				<tr>
+					<td class="legend_figure"><div id="input_color">&nbsp;</div></td>
+					<td class="legend_explain">条件指定値</td>
+				</tr>
+				<tr>
+					<td class="legend_figure"><div id="estimate_color">&nbsp;</div></td>
+					<td class="legend_explain">ざっくり計算値</td>
+				</tr>
+			</table>
+		</fieldset>
+	</div>
 </div>
 
 <!-- レイアウト調整 -->
 <div class="filler">&nbsp;</div>
-<div class="filler">&nbsp;</div>
 
+<!-- グラフタイトル領域 -->
 <div class="estimate_title">
-	<span id="graph_title">工程工数グラフ</span>
+	<img src="image/icon_3g_48.png" width="30px"/>
+	<span id="graph_title" class="section_title">工程工数グラフ</span>
 </div>
  
 <!-- グラフ（凡例）領域 -->
@@ -248,8 +319,6 @@ $(function() {
 		
 		<!-- スライダ領域 -->
 		<div id="jquery-ui-slider-wrap">
-		    <!-- スライダ色の変更は .ui-widget-header -->
-		    <!-- スライダのツマミ色の変更は .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default -->
 		    <div id="jquery-ui-slider"></div>
 		</div>
 	</div>
@@ -260,15 +329,11 @@ $(function() {
 			<table class="legend_table">
 				<tr>
 					<th><img src="image/TermJuas.png" width="15px"/></th>
-					<td>
-						標準工期
-					</td>
+					<td>標準工期</td>
 				</tr>
 				<tr>
 					<th><img src="image/TermSlim.png" width="15px"/></th>
-					<td>
-						最短開発期間
-					</td>
+					<td>最短開発期間</td>
 				</tr>
 			</table>
 		</fieldset>

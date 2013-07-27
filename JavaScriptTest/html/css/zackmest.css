@@ -6,11 +6,23 @@
 div.ruler {width:100px; border:1px solid #000; text-align: center; float: left;}
 
 /* フィラー */
-div.filler {height:20px; clear:both;}
+div.filler {height:15px; clear:both;}
+
+
+/* -------------------- グラフタイトル -------------------- */
+div.estimate_title  {
+	height:50px; width:500px; text-align: left; padding-left: 5px;
+	display:table-cell;
+	vertical-align:middle;
+	clear:both;
+}
+div.estimate_title img {float: left;}
+span.section_title {font-size: 24px; text-shadow: #888 2px 2px 2px; float: left;}
 
 /* -------------------- ざっくり条件指定欄 -------------------- */
 div#calc_condition_area {width: 800px;}
-fieldset#calc_condition_field {padding-left:30px; padding-right:30px;}
+fieldset#calc_condition_field legend {text-shadow: #888 1px 1px 1px;}
+
 table#calc_condition_table_left {width: 350px; float:left;}
 table#calc_condition_table_right {width:350px; float:right;}
 
@@ -36,9 +48,6 @@ table.lookgood_table th,td {
 }
 
 table.lookgood_table th {
-/* 
-	background-color: orange;
- */
  	background-image: -moz-linear-gradient(left, #ffffff, #ffc75c); /* Firefox */
 	font-weight: normal;
 	width: 170px;
@@ -58,14 +67,48 @@ div#base_value_area tr {height: 20px;}
 div#base_value_area td {width: 80px; text-align: right;}
 
 div#base_value_area {width: 800px;}
-div#base_value_left_pane {width: 350px; float:left;}
-div#base_value_right_pane {width:350px; float:right;}
+div#base_value_left_pane {width: 400px; float:left;}
+div#base_value_right_pane {width:400px; float:left;}
+/* 比較グラフ */
+div#base_value_graph_pane {width:215px; float:left;}
+/* 凡例 */
+div#base_value_graph_legend_pane {width:140px; padding-top:30px; float:left;}
+fieldset#base_value_graph_legend_field {width:120px; padding: 2px;}
+table#base_value_graph_legend_table {width:120px}
+table#base_value_graph_legend_table td {text-align: left; font-size: 13px;}
+table#base_value_graph_legend_table td.legend_figure {width:12px;}
+table#base_value_graph_legend_table td.legend_explain {width:100px;}
+div#input_color {
+	border: 2px solid #f99; background-color: #ffe1e1; width: 10px; height: 10px;
+}
+div#estimate_color {
+	border: 2px solid #99f;	background-color: #e1e1ff; width: 10px; height: 10px;
+}
 
-/* -------------------- グラフタイトル -------------------- */
-div.estimate_title  {width:500px; text-align: left; padding-left: 10px;}
-span#graph_title {font-size: 24px; text-shadow: #888 2px 2px 2px;}
+/* レーダチャート */
+/* canvas chart */
+#chart_graph {
+	width:360px;
+	height:185px;
+	float:left;
+	margin:0 20px 20px 0;
+	border: 1px solid #b0b0b0;
+	border-spacing: 2px;
+	border-width: 2px;
+
+	/* 角を丸くする */
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+	
+	float:left;
+}
+
+.valName {font-size: 12px;}
+.valCntName {color:#aaa;}
 
 /* -------------------- グラフ領域 -------------------- */
+div.estimate_legend_area {width:800px; height:90px; clear:both;}
 /* スライダキャプション */
 div#slider_area {width:550px; float:left; padding-top:10px;}
 div#slider_caption_area {width:550px;}
@@ -105,7 +148,6 @@ td.process_name_4 { /* 結合テスト */
 .ui-slider .ui-slider-handle { border-color: #888FCF; border-width:2px;}
 
 /* 凡例 */
-div.estimate_legend_area {width:800px; height:90px;}
 div.estimate_legend {width:130px; float:right; padding-right: 60px;}
 
 fieldset.legend_field {width:150px; padding:5px;}

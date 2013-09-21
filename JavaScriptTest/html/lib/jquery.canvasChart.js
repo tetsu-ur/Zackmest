@@ -161,7 +161,7 @@ $(function(){
 					//gauge
 					if(options.gauge){
 						if(options.gaugeColor == ''){
-							options.gaugeColor =　options.bgStrokeColor;
+							options.gaugeColor = options.bgStrokeColor;
 						};
 						gaugeDraw(options.gaugeColor);
 					};
@@ -169,7 +169,7 @@ $(function(){
 					//scale
 					if(options.scale){
 						if(options.scaleColor == ''){
-							options.scaleColor =　options.bgStrokeColor;
+							options.scaleColor = options.bgStrokeColor;
 						};
 						scaleDraw(options.scaleColor);
 					};
@@ -263,7 +263,7 @@ $(function(){
 						
 						if(options.chartPoint){
 							if(options.chartPointColor[chartTgt] == undefined ||options.chartPointColor[chartTgt] == ''){
-								options.chartPointColor[chartTgt] =　options.chartStrokeColor[chartTgt];
+								options.chartPointColor[chartTgt] = options.chartStrokeColor[chartTgt];
 							};
 							point(options.chartPointColor[chartTgt],true);
 						};

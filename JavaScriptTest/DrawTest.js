@@ -5,8 +5,8 @@
 var root_x = 1;
 var root_y = 40;
 /* グリッドのサイズ */
-var GRID_WIDTH = 20;
-var GRID_HEIGHT = 20;
+var GRID_WIDTH = 16;
+var GRID_HEIGHT = 16;
 /* グラフのサイズ(グリッド単位) */
 var GRAPH_GRID_X_NUM = 0; // 廃止予定
 var GRAPH_GRID_Y_NUM = 10;

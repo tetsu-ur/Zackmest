@@ -15,6 +15,7 @@
 	<!-- テストデータ -->
 	<script type="text/javascript" src="../estimate_test_data.js"></script>
 
+	<script type="text/javascript" src="../skscroll.js"></script>
 	<script type="text/javascript" src="../DrawTest.js"></script>
 	<link href="css/zackmest.css" rel="stylesheet">
 	<title>Insert title here</title>
@@ -129,21 +130,47 @@ $(function() {
 		gauge : true,//中央からのゲージライン描画 
 		scale : true,//ゲージラインの目盛り描画 
 	});
-//    jQuery('#jquery-ui-slider-values-1').val(jQuery('#jquery-ui-slider').slider('values',1 ));
+	
+	 $( "#program_size" ).spinner({ step: 5, numberFormat: "n"});
+	 $( "#function_point" ).spinner({ step: 100, numberFormat: "n"});
+	 $( "#productivity" ).spinner({ step: 0.10, numberFormat: "n"});
+	 $( "#dev_term" ).spinner({ step: 1, numberFormat: "n"});
+	 $( "#man_hour" ).spinner({ step: 5, numberFormat: "n"});
 } );
 </script> 
 
 </head>
 <body>
 
+<div id="header"></div>
+
+<div id="filler">&nbsp;</div>
+
+<!-- HITML コンテンツコンテナ -->
+<div id="container">
+
+<div id="left_space" class="side_space"></div>
+<div id="right_space" class="side_space"></div>
+
+<!-- HITML 左側のコンテンツ -->
+<div id="left_contents">
+</div>
+
+<!-- HITML 右側のコンテンツ -->
+<div id="right_contents">
+</div>
+
+<!-- HITML メインコンテンツ -->
+<div id="main_contents">
+
 <!-- Web定規 -->
+<!-- 
 <div class="ruler_area">
 	<div class="ruler">1</div><div class="ruler">2</div><div class="ruler">3</div>
 	<div class="ruler">4</div><div class="ruler">5</div>
 	<div class="ruler">6</div><div class="ruler">7</div><div class="ruler">8</div>
-	<div class="ruler">9</div><div class="ruler">10</div>
 </div>
-
+ -->
 <!-- レイアウト調整 -->
 <div class="filler">&nbsp;</div>
 
@@ -153,32 +180,57 @@ $(function() {
 	<span class="section_title">ざっくり条件指定</span>
 </div>
 
+<p class="description">
+	見積りたいプロジェクトについてわかっている条件を入力します。<br />
+	全ての項目を入力しなくても、「生産性」とそれ以外に少なくとも１項目を入力すれば見積れます。<br />
+</p>
+
 <!-- ざっくり条件指定領域 -->
 <div id="calc_condition_area">
 	<table id="calc_condition_table_left" class="lookgood_table">
 		<tr>
+			<th>開発種別</th>
+			<td id="radio" >
+				<input type="radio" id="dev_new" name="dev_type" checked="checked" /><label for="dev_new">新規</label>
+				<input type="radio" id="dev_rep" name="dev_type" /><label for="dev_rep">改修</label>
+			</td>
+		</tr>
+		<tr>
 			<th>プログラムサイズ(Ks)</th>
-			<td><input type="text" size="8" maxlength="5" /></td>
+			<td>
+				<input id="program_size" name="spinner" value="" max="999.99" maxlength="6" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
+			</td>
 		</tr>
 		<tr>
 			<th>ファンクションポイント数</th>
-			<td><input type="text" size="8" maxlength="5" /></td>
-		</tr>
-		<tr>
-			<th>生産性(Ks)</th>
-			<td><input type="text" size="8" maxlength="5" /></td>
+			<td>
+				<input id="function_point" name="spinner" value="" max="9999.99" maxlength="7" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
+			</td>
 		</tr>
 	</table>
 	<table id="calc_condition_table_right" class="lookgood_table">
 		<tr>
+			<th>生産性(Ks)</th>
+			<td>
+				<input id="productivity" name="spinner" value="" max="9.99" maxlength="4" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
+			</td>
+		</tr>
+		<tr>
 			<th>開発期間(月)</th>
-			<td><input type="text" size="8" maxlength="5" /></td>
+			<td>
+				<input id="dev_term" name="spinner" value="" max="99.99" maxlength="5" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
+			</td>
 		</tr>
 		<tr>
 			<th>工数(人月)</th>
-			<td><input type="text" size="8" maxlength="5" /></td>
+			<td>
+				<input id="man_hour" name="spinner" value="" max="999.99" maxlength="6" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
+			</td>
 		</tr>
 	</table>
+</div>
+
+<div>
 	<button id="submit_estimate">ざっくり見積り</button>
 </div>
 
@@ -190,6 +242,12 @@ $(function() {
 	<img src="image/icon_3g_48.png" width="30px"/>
 	<span class="section_title">基礎数値</span>
 </div>
+
+<p class="description">
+	指定された条件から算出した、プロジェクトの全工程にかかる数値です。<br />
+	ざっくり条件指定で未入力だった項目を補完したり、そこから工期を算出した結果です。<br />
+	ポーラーチャートでは、入力した条件とは違った観点で計算した値との比較結果を表しています。<br />
+</p>
 
 <!-- 基礎数値表示領域 -->
 <div id="base_value_area">
@@ -227,7 +285,7 @@ $(function() {
 
 <div id="base_value_area">
 	<div id="base_value_left_pane">
-		<div class="table_title"><span class="title">規模予測</span></div>
+		<div class="table_title"><span class="title">ざっくり推計</span></div>
 		<table id="" class="lookgood_table">
 			<tr>
 				<th>プログラムサイズ</th>
@@ -252,7 +310,7 @@ $(function() {
 		</table>
 	</div>
 	<div id="base_value_graph_pane">
-		<div class="table_title"><span class="title">入力値／計算値比較グラフ</span></div>
+		<div class="table_title"><span class="title">ざっくり推計値／メトリクス値比較グラフ</span></div>
 		<div id="chart_graph">
 			<canvas width="210" height="200"></canvas>
 			<div class="chartInput">
@@ -277,11 +335,11 @@ $(function() {
 			<table id="base_value_graph_legend_table">
 				<tr>
 					<td class="legend_figure"><div id="input_color">&nbsp;</div></td>
-					<td class="legend_explain">条件指定値</td>
+					<td class="legend_explain">ざっくり推計値</td>
 				</tr>
 				<tr>
 					<td class="legend_figure"><div id="estimate_color">&nbsp;</div></td>
-					<td class="legend_explain">ざっくり計算値</td>
+					<td class="legend_explain">メトリクス値</td>
 				</tr>
 			</table>
 		</fieldset>
@@ -296,6 +354,11 @@ $(function() {
 	<img src="image/icon_3g_48.png" width="30px"/>
 	<span id="graph_title" class="section_title">工程工数グラフ</span>
 </div>
+ 
+ <p class="description">
+	工程比率・工期比率によって基礎数値を分割し、各工程ごとに必要な期間・工数を算出したものです。<br />
+	スライダの両端を動かすことで、任意の工程範囲を表示することができます。
+</p>
  
 <!-- グラフ（凡例）領域 -->
 <div class="estimate_legend_area">
@@ -495,11 +558,14 @@ $(function() {
 </div>
 
 <!-- Web定規 -->
+<!-- 
 <div class="ruler_area">
 	<div class="ruler">1</div><div class="ruler">2</div><div class="ruler">3</div>
 	<div class="ruler">4</div><div class="ruler">5</div>
 	<div class="ruler">6</div><div class="ruler">7</div><div class="ruler">8</div>
-	<div class="ruler">9</div><div class="ruler">10</div>
+</div>
+ -->
+</div>
 </div>
 
 </body>

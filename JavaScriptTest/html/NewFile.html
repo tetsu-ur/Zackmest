@@ -8,6 +8,9 @@
 	<script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
 	<script type="text/javascript" src="lib/ui/jquery-ui.js"></script>
 
+	<link rel="stylesheet" href="lib/pixelmatrix-uniform/themes/default/css/uniform.default.css" media="screen" />
+	<script src="lib/pixelmatrix-uniform/jquery.uniform.js"></script>
+
 	<!-- レーダチャート -->
 	<script type="text/javascript" src="lib/excanvas.js"></script>
 	<script type="text/javascript" src="lib/jquery.canvasChart.js"></script>
@@ -75,7 +78,7 @@ $(function() {
             		drawEstimateCanvas(estimateDataJson.estimateValue[i]);
 
             		// 工程・工数領域のスクロール位置と選択状態の表のアクティブ化 
-            		$("#process_workmonth_table_area").scrollLeft(i * 214);
+            		$("#process_workmonth_table_area").animate({scrollLeft: i * 214}, 500);
             		$("#process_workmonth_table_area_inner th").removeClass("table_active");
             		var str = "#process_workmonth_table_area_inner table:nth-of-type(" + (Number(i) + 1) + ") th";
 	        		$(str).addClass("table_active");
@@ -114,7 +117,7 @@ $(function() {
     } );
     
 	$('#chart_graph').canvasChart({
-		polygon : 5,
+		polygon : 7,
 		valuation : 10,//評価値 
 		valuationCntPrint : false,//評価の数値表記 
 		radius : 80,//半径 
@@ -124,8 +127,8 @@ $(function() {
 		bgStrokeColor: '#cccccc',
 		chartStrokeColor : ['#f99','#99f'],//チャートの線 
 		chartFillColor : ['rgba(200, 150, 150, 0.5)','rgba(150, 150, 200, 0.5)'],//チャートの塗り
-		valuationName : ['プログラムサイズ', 'FP数', '生産性', '開発期間', '工数'],
-		                 
+		valuationName : ['プログラムサイズ', '最短開発期間', '標準工期', '開発期間', '生産性', 'FP数', '工数'],
+
 		chartPointSize : [5],//チャートの点サイズ 
 		gauge : true,//中央からのゲージライン描画 
 		scale : true,//ゲージラインの目盛り描画 
@@ -136,14 +139,19 @@ $(function() {
 	 $( "#productivity" ).spinner({ step: 0.10, numberFormat: "n"});
 	 $( "#dev_term" ).spinner({ step: 1, numberFormat: "n"});
 	 $( "#man_hour" ).spinner({ step: 5, numberFormat: "n"});
+	 
+	 $("select, input[type=radio]").uniform();
 } );
 </script> 
 
 </head>
 <body>
 
-<div id="header"></div>
+<div id="header">
+	<img id="title_image" src="image/色鉛筆ロゴ.png"/>
+</div>
 
+<div id="filler">&nbsp;</div>
 <div id="filler">&nbsp;</div>
 
 <!-- HITML コンテンツコンテナ -->
@@ -230,7 +238,7 @@ $(function() {
 	</table>
 </div>
 
-<div>
+<div id="submit_estimate_area">
 	<button id="submit_estimate">ざっくり見積り</button>
 </div>
 
@@ -251,98 +259,160 @@ $(function() {
 
 <!-- 基礎数値表示領域 -->
 <div id="base_value_area">
-	<div id="base_value_left_pane">
-		<div>
-			<div class="table_title"><span class="title">作業工数</span></div>
-			<table id="" class="lookgood_table">
-				<tr>
-					<th>工数を月で分割</th>
-					<td>5.56 人月</td>
-				</tr>
-			</table>
-		</div>
 
+	<!-- 基礎数値表示領域：左ペイン -->
+	<div id="base_value_left_pane">
+		<!-- 見積り比較グラフ領域 -->
+		<div id="base_value_graph_pane">
+			<div class="table_title"><span class="title">見積り比較グラフ</span></div>
+			<!-- ポーラーチャート領域 -->
+			<div id="chart_contents">
+				<div id="chart_graph">
+					<canvas width="210" height="200"></canvas>
+					<div class="chartInput">
+						<input type="hidden" value="10" id="input1" name="input1" />
+						<input type="hidden" value="10" id="input2" name="input2" />
+						<input type="hidden" value="6" id="input3" name="input3" />
+						<input type="hidden" value="10" id="input4" name="input4" />
+						<input type="hidden" value="10" id="input5" name="input5" />
+						<input type="hidden" value="5" id="input6" name="input6" />
+						<input type="hidden" value="8" id="input7" name="input7" />
+					</div>
+					<div class="chartInput">
+						<input type="hidden" value="9" id="input1" name="input1" />
+						<input type="hidden" value="7" id="input2" name="input2" />
+						<input type="hidden" value="10" id="input3" name="input3" />
+						<input type="hidden" value="6" id="input4" name="input4" />
+						<input type="hidden" value="4" id="input5" name="input5" />
+						<input type="hidden" value="5" id="input6" name="input6" />
+						<input type="hidden" value="8" id="input7" name="input7" />
+					</div>
+					<div id="base_value_graph_legend_area">
+						<fieldset id="base_value_graph_legend_field">
+							<legend>凡例</legend>
+							<table id="base_value_graph_legend_table">
+								<tr>
+									<td class="legend_figure"><div id="input_color">&nbsp;</div></td>
+									<td class="legend_explain">ざっくり見積り値</td>
+								</tr>
+								<tr>
+									<td class="legend_figure"><div id="estimate_color">&nbsp;</div></td>
+									<td class="legend_explain">別観点での見積り値</td>
+								</tr>
+							</table>
+						</fieldset>
+					</div>
+					<div id="base_value_other_angle_item">
+						<span class="remark">別観点により比較する項目</span><br/>
+						<select id="OtherAngleItem">
+							<option value="1">プログラムサイズ</option>
+							<option value="2">ファンクションポイント</option>
+							<option value="3">生産性</option>
+							<option value="4">開発期間</option>
+							<option value="5">工数</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
+
+
+	<!-- 基礎数値表示領域：右ペイン -->
 	<div id="base_value_right_pane">
-		<div>
-			<div class="table_title"><span class="title">工期の妥当性評価</span></div>
-			<table id="" class="lookgood_table">
-				<tr>
-					<th>最短開発期間</th>
-					<td>7.7 ヶ月</td>
-				</tr>
-				<tr>
-					<th>標準工期</th>
-					<td>5.8 ヶ月</td>
-				</tr>
-			</table>
-		</div>
-	</div>
-</div>
+		<div class="table_title"><span class="title">見積り結果</span></div>
 
-<!-- レイアウト調整 -->
-<div class="filler">&nbsp;</div>
+		<!-- レイアウト調整 -->
+		<div class="filler">&nbsp;</div>
+		<div class="filler">&nbsp;</div>
+		<div class="filler">&nbsp;</div>
 
-<div id="base_value_area">
-	<div id="base_value_left_pane">
-		<div class="table_title"><span class="title">ざっくり推計</span></div>
-		<table id="" class="lookgood_table">
-			<tr>
-				<th>プログラムサイズ</th>
-				<td>30 Ks</td>
+		<table class="lookgood_table tr_tall">
+			<tr class="tr_header">
+				<th><div class="title"><img src="image/icon_4b_24.png"><span>基本項目</span></div></th>
+				<th colspan="2" align="center">ざっくり見積り値</th>
+				<th colspan="2" align="center">別観点での見積り値</th>
 			</tr>
 			<tr>
-				<th>ファンクションポイント数</th>
-				<td>5.8 FP</td>
+				<th>プログラムサイズ</th>
+				<td class="calc_icon calc_input" >入</td><td>30 Ks</td>
+				<td class="calc_icon calc_input" >入</td><td>30 Ks</td>
+			</tr>
+			<tr>
+				<th>ファンクションポイント</th>
+				<td class="calc_icon calc_input" >入</td><td>5.8 FP</td>
+				<td class="calc_icon calc_calc" >計</td><td>5.8 FP</td>
 			</tr>
 			<tr>
 				<th>生産性</th>
-				<td>1 Ks</td>
+				<td class="calc_icon calc_calc" >計</td><td>1 Ks</td>
+				<td class="calc_icon calc_input" >入</td><td>1 Ks</td>
 			</tr>
 			<tr>
 				<th>開発期間</th>
-				<td>6 ヶ月</td>
+				<td class="calc_icon calc_input" >入</td><td>6 ヶ月</td>
+				<td class="calc_icon calc_input" >入</td><td>6 ヶ月</td>
 			</tr>
 			<tr>
 				<th>工数</th>
-				<td>33 人月</td>
+				<td class="calc_icon calc_input" >入</td><td>33 人月</td>
+				<td class="calc_icon calc_stat" >統</td><td>33 人月</td>
 			</tr>
 		</table>
-	</div>
-	<div id="base_value_graph_pane">
-		<div class="table_title"><span class="title">ざっくり推計値／メトリクス値比較グラフ</span></div>
-		<div id="chart_graph">
-			<canvas width="210" height="200"></canvas>
-			<div class="chartInput">
-				<input type="hidden" value="10" id="input1" name="input1" />
-				<input type="hidden" value="10" id="input2" name="input2" />
-				<input type="hidden" value="6" id="input3" name="input3" />
-				<input type="hidden" value="10" id="input4" name="input4" />
-				<input type="hidden" value="10" id="input5" name="input5" />
-			</div>
-			<div class="chartInput">
-				<input type="hidden" value="9" id="input1" name="input1" />
-				<input type="hidden" value="7" id="input2" name="input2" />
-				<input type="hidden" value="10" id="input3" name="input3" />
-				<input type="hidden" value="6" id="input4" name="input4" />
-				<input type="hidden" value="4" id="input5" name="input5" />
-			</div>
+
+		<!-- レイアウト調整 -->
+		<div class="filler">&nbsp;</div>
+
+		<table class="lookgood_table tr_tall">
+			<tr class="tr_header">
+				<th><div class="title"><img src="image/icon_2y_24.png"><span>作業工数</span></div></th>
+				<th colspan="2" align="center">ざっくり見積り値</th>
+				<th colspan="2" align="center">別観点での見積り値</th>
+			</tr>
+			<tr>
+				<th>工数を月で分割</th>
+				<td class="calc_icon calc_calc" >計</td><td>5.56 人月</td>
+				<td class="calc_icon calc_calc" >計</td><td>5.56 人月</td>
+			</tr>
+		</table>
+
+		<!-- レイアウト調整 -->
+		<div class="filler">&nbsp;</div>
+
+		<table id="" class="lookgood_table tr_tall">
+			<tr class="tr_header">
+				<th><div class="title"><img src="image/icon_1r_24.png"><span>工期の妥当性</span></div></th>
+				<th colspan="2" align="center">ざっくり見積り値</th>
+				<th colspan="2" align="center">別観点での見積り値</th>
+			</tr>
+			<tr>
+				<th>最短開発期間</th>
+				<td class="calc_icon calc_stat" >統</td><td>7.7 ヶ月</td>
+				<td class="calc_icon calc_stat" >統</td><td>7.7 ヶ月</td>
+			</tr>
+			<tr>
+				<th>標準工期</th>
+				<td class="calc_icon calc_stat" >統</td><td>5.8 ヶ月</td>
+				<td class="calc_icon calc_stat" >統</td><td>5.8 ヶ月</td>
+			</tr>
+		</table>
+
+		<!-- 基礎数値表示領域：見積結果表凡例 -->
+		<div id="base_value_table_legend_area">
+			<fieldset id="base_value_table_legend_field">
+				<legend>凡例</legend>
+				<table id="base_value_table_legend_table">
+					<tr>
+						<td class="calc_icon calc_input" >入</td>
+						<td class="legend_explain">入力値</td>
+						<td class="calc_icon calc_calc" >計</td>
+						<td class="legend_explain">計算値</td>
+						<td class="calc_icon calc_stat" >統</td>
+						<td class="legend_explain">統計値</td>
+					</tr>
+				</table>
+			</fieldset>
 		</div>
-	</div>
-	<div id="base_value_graph_legend_pane">
-		<fieldset id="base_value_graph_legend_field">
-			<legend>凡例</legend>
-			<table id="base_value_graph_legend_table">
-				<tr>
-					<td class="legend_figure"><div id="input_color">&nbsp;</div></td>
-					<td class="legend_explain">ざっくり推計値</td>
-				</tr>
-				<tr>
-					<td class="legend_figure"><div id="estimate_color">&nbsp;</div></td>
-					<td class="legend_explain">メトリクス値</td>
-				</tr>
-			</table>
-		</fieldset>
 	</div>
 </div>
 
@@ -422,8 +492,6 @@ $(function() {
 	</div>
 </div>
 
-<!-- レイアウト調整 -->
-<div class="filler">&nbsp;</div>
 
 <!-- 工数・工程表示領域 -->
 <div id="process_workmonth_area">

@@ -145,10 +145,12 @@ table.lookgood_table th {
 }
 
 div#submit_estimate_area {width: 780px;}
-button#submit_estimate{ font-size: 14px; clear:both; height:30px; float: right; margin-top: 10px;}
+button#submit_estimate{margin-left: 20px ;font-size: 14px; clear:both; height:30px; float: right; margin-top: 10px;}
+button#reset_button{ font-size: 14px; height:30px; float: right; margin-top: 10px;}
 
 input.dev_type {height: 40%};
 
+input.spinner {text-align: right; height:15px; font-size: 15px;}
 
 /* -------------------------------------------------------------------- */
 /* - 基礎数値表示領域                                                 - */
@@ -185,22 +187,36 @@ div#base_value_area td.calc_icon {
 	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
 }
 /* 基礎数値算出アイコン:手入力 */
-div#base_value_area td.calc_input {
+div#base_value_area td.calc_1 {
 	color: blue;
 	background-image: -moz-linear-gradient(left top, #ffffff, #b0b0ff);
  	background-image: -webkit-gradient(linear, left top, right bottom, from(#ffffff), to(#b0b0ff)); 
 }
 /* 基礎数値算出アイコン:計算値 */
-div#base_value_area td.calc_calc {
+div#base_value_area td.calc_2 {
 	color: red;
 	background-image: -moz-linear-gradient(left top, #ffffff, #ffb0b0);
  	background-image: -webkit-gradient(linear, left top, right bottom, from(#ffffff), to(#ffb0b0)); 
 }
 /* 基礎数値算出アイコン:統計値 */
-div#base_value_area td.calc_stat {
+div#base_value_area td.calc_3 {
 	color: green;
 	background-image: -moz-linear-gradient(left top, #ffffff, #b0ffb0);
  	background-image: -webkit-gradient(linear, left top, right bottom, from(#ffffff), to(#b0ffb0)); 
+}
+/* 基礎数値算出アイコン:他項目を引用 */
+div#base_value_area td.calc_4 {
+	color: black;
+	background-image: -moz-linear-gradient(left top, #ffffff, #b0b0b0);
+ 	background-image: -webkit-gradient(linear, left top, right bottom, from(#ffffff), to(#b0ffb0)); 
+}
+
+/* - 基礎数値算出アイコン凡例 ----------------------------------- */
+div#base_value_table_legend_area {
+	width:260px;
+	position: absolute;
+    top: -5px;  
+    left: 170px;
 }
 
 /* - 基礎数値算出アイコン凡例 ----------------------------------- */
@@ -243,8 +259,8 @@ div#estimate_color {
 /* canvas chart */
 div#chart_contents {
 	width:250px;
-	height:350px;
-	margin:20px 20px 40px 0px;
+	height:360px;
+	margin:10px 20px 40px 0px;
 	border: 1px solid #b0b0b0;
 	border-spacing: 1px;
 	border-width: 2px;
@@ -269,9 +285,10 @@ div#chart_graph {
 /*  別観点により比較する項目 */
 div#base_value_other_angle_item {
 	position: absolute;
-    top: 285px;  
+    top: 275px;
     left: 25px;
 }
+	select[name=otherAngleItem] {width: 155px;}
 
 /* -------------------------------------------------------------------- */
 /* - グラフ領域                                                       - */
@@ -340,7 +357,7 @@ canvas.graph {}
 /* - 工数・工程表示領域                                               - */
 /* -------------------------------------------------------------------- */
 
-div#process_workmonth_area {width: 800px;}
+div#process_workmonth_area {width: 800px; padding-left: 20px;}
 
 /* 工数・工程テーブル左端項目名称 */
 table#process_workmonth_caption_table {

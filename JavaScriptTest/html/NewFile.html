@@ -37,13 +37,17 @@ window.onload = function() {
 $(function() {
 
 	// 「ざっくり見積り」ボタン
-	$( "button:first" ).button({
-		icons: {
-			primary: " ui-icon-calculator"
-		},
+	$( "#submit_estimate" ).button({
+		icons: {primary: " ui-icon-calculator"},
 		text: true
 	}).click(function(){ /* クリック時の動作 */ });
-	
+
+	// 「リセット」ボタン
+	$( "#reset_button" ).button({
+		icons: {primary: " ui-icon-trash"},
+		text: true
+	}).click(function(){ /* クリック時の動作 */ });
+
 	// スライドバー
     $("#jquery-ui-slider").slider( {
         orientation: 'horizontal',
@@ -134,7 +138,7 @@ $(function() {
 		scale : true,//ゲージラインの目盛り描画 
 	});
 	
-	 $( "#program_size" ).spinner({ step: 5, numberFormat: "n"});
+	 $( "input[name=programSize]" ).spinner({ step: 5, numberFormat: "n"});
 	 $( "#function_point" ).spinner({ step: 100, numberFormat: "n"});
 	 $( "#productivity" ).spinner({ step: 0.10, numberFormat: "n"});
 	 $( "#dev_term" ).spinner({ step: 1, numberFormat: "n"});
@@ -206,13 +210,13 @@ $(function() {
 		<tr>
 			<th>プログラムサイズ(Ks)</th>
 			<td>
-				<input id="program_size" name="spinner" value="" max="999.99" maxlength="6" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
+				<input class="spinner" type="text" name="programSize" max="999" maxlength="6" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
 			</td>
 		</tr>
 		<tr>
 			<th>ファンクションポイント数</th>
 			<td>
-				<input id="function_point" name="spinner" value="" max="9999.99" maxlength="7" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
+				<input class="spinner" id="function_point" name="spinner" value="" max="9999.99" maxlength="7" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
 			</td>
 		</tr>
 	</table>
@@ -220,19 +224,19 @@ $(function() {
 		<tr>
 			<th>生産性(Ks)</th>
 			<td>
-				<input id="productivity" name="spinner" value="" max="9.99" maxlength="4" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
+				<input class="spinner" id="productivity" name="spinner" value="" max="9.99" maxlength="4" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
 			</td>
 		</tr>
 		<tr>
 			<th>開発期間(月)</th>
 			<td>
-				<input id="dev_term" name="spinner" value="" max="99.99" maxlength="5" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
+				<input class="spinner" id="dev_term" name="spinner" value="" max="99.99" maxlength="5" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
 			</td>
 		</tr>
 		<tr>
 			<th>工数(人月)</th>
 			<td>
-				<input id="man_hour" name="spinner" value="" max="999.99" maxlength="6" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
+				<input class="spinner" id="man_hour" name="spinner" value="" max="999.99" maxlength="6" style="text-align: right; height:15px; font-size: 15px; width:100px;"/>
 			</td>
 		</tr>
 	</table>
@@ -240,6 +244,7 @@ $(function() {
 
 <div id="submit_estimate_area">
 	<button id="submit_estimate">ざっくり見積り</button>
+	<button id="reset_button">リセット</button>
 </div>
 
 <!-- レイアウト調整 -->
@@ -304,7 +309,7 @@ $(function() {
 					</div>
 					<div id="base_value_other_angle_item">
 						<span class="remark">別観点により比較する項目</span><br/>
-						<select id="OtherAngleItem">
+						<select id="OtherAngleItem" size="3">
 							<option value="1">プログラムサイズ</option>
 							<option value="2">ファンクションポイント</option>
 							<option value="3">生産性</option>
@@ -335,28 +340,28 @@ $(function() {
 			</tr>
 			<tr>
 				<th>プログラムサイズ</th>
-				<td class="calc_icon calc_input" >入</td><td>30 Ks</td>
-				<td class="calc_icon calc_input" >入</td><td>30 Ks</td>
+				<td class="calc_icon calc_1" >入</td><td>30 Ks</td>
+				<td class="calc_icon calc_1" >入</td><td>30 Ks</td>
 			</tr>
 			<tr>
 				<th>ファンクションポイント</th>
-				<td class="calc_icon calc_input" >入</td><td>5.8 FP</td>
-				<td class="calc_icon calc_calc" >計</td><td>5.8 FP</td>
+				<td class="calc_icon calc_1" >入</td><td>5.8 FP</td>
+				<td class="calc_icon calc_2" >計</td><td>5.8 FP</td>
 			</tr>
 			<tr>
 				<th>生産性</th>
-				<td class="calc_icon calc_calc" >計</td><td>1 Ks</td>
-				<td class="calc_icon calc_input" >入</td><td>1 Ks</td>
+				<td class="calc_icon calc_2" >計</td><td>1 Ks</td>
+				<td class="calc_icon calc_1" >入</td><td>1 Ks</td>
 			</tr>
 			<tr>
 				<th>開発期間</th>
-				<td class="calc_icon calc_input" >入</td><td>6 ヶ月</td>
-				<td class="calc_icon calc_input" >入</td><td>6 ヶ月</td>
+				<td class="calc_icon calc_1" >入</td><td>6 ヶ月</td>
+				<td class="calc_icon calc_1" >入</td><td>6 ヶ月</td>
 			</tr>
 			<tr>
 				<th>工数</th>
-				<td class="calc_icon calc_input" >入</td><td>33 人月</td>
-				<td class="calc_icon calc_stat" >統</td><td>33 人月</td>
+				<td class="calc_icon calc_1" >入</td><td>33 人月</td>
+				<td class="calc_icon calc_3" >統</td><td>33 人月</td>
 			</tr>
 		</table>
 
@@ -371,8 +376,8 @@ $(function() {
 			</tr>
 			<tr>
 				<th>工数を月で分割</th>
-				<td class="calc_icon calc_calc" >計</td><td>5.56 人月</td>
-				<td class="calc_icon calc_calc" >計</td><td>5.56 人月</td>
+				<td class="calc_icon calc_2" >計</td><td>5.56 人月</td>
+				<td class="calc_icon calc_2" >計</td><td>5.56 人月</td>
 			</tr>
 		</table>
 
@@ -386,14 +391,14 @@ $(function() {
 				<th colspan="2" align="center">別観点での見積り値</th>
 			</tr>
 			<tr>
-				<th>最短開発期間</th>
-				<td class="calc_icon calc_stat" >統</td><td>7.7 ヶ月</td>
-				<td class="calc_icon calc_stat" >統</td><td>7.7 ヶ月</td>
+				<th>標準工期</th>
+				<td class="calc_icon calc_3" >統</td><td>5.8 ヶ月</td>
+				<td class="calc_icon calc_3" >統</td><td>5.8 ヶ月</td>
 			</tr>
 			<tr>
-				<th>標準工期</th>
-				<td class="calc_icon calc_stat" >統</td><td>5.8 ヶ月</td>
-				<td class="calc_icon calc_stat" >統</td><td>5.8 ヶ月</td>
+				<th>最短開発期間</th>
+				<td class="calc_icon calc_3" >統</td><td>7.7 ヶ月</td>
+				<td class="calc_icon calc_3" >統</td><td>7.7 ヶ月</td>
 			</tr>
 		</table>
 
@@ -403,12 +408,18 @@ $(function() {
 				<legend>凡例</legend>
 				<table id="base_value_table_legend_table">
 					<tr>
-						<td class="calc_icon calc_input" >入</td>
+						<td class="calc_icon calc_1" >入</td>
 						<td class="legend_explain">入力値</td>
-						<td class="calc_icon calc_calc" >計</td>
+						<td class="calc_icon calc_2" >計</td>
 						<td class="legend_explain">計算値</td>
-						<td class="calc_icon calc_stat" >統</td>
+						<td class="calc_icon calc_3" >統</td>
 						<td class="legend_explain">統計値</td>
+					</tr>
+					<tr>
+						<td class="calc_icon calc_5" >固</td>
+						<td class="legend_explain">固定値</td>
+						<td class="calc_icon calc_4" >引</td>
+						<td class="legend_explain" colspan="3">他項目を引用</td>
 					</tr>
 				</table>
 			</fieldset>
@@ -496,6 +507,8 @@ $(function() {
 <!-- 工数・工程表示領域 -->
 <div id="process_workmonth_area">
 	<div class="table_title"><span class="title">工程と工数</span></div>
+	<div class="filler">&nbsp;</div>
+	<div class="filler">&nbsp;</div>
 	<div id="process_workmonth_caption_table_area">
 		<table id="process_workmonth_caption_table">
 			<tr><th rowspan="2">工程</th></tr>

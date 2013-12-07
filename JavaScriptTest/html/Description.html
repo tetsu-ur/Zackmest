@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<!-- jQuery と jQuery UI -->
+	<script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
+
+	<script type="text/javascript" src="../skscroll.js"></script>
+	<link href="css/zackmest.css" rel="stylesheet">
+	<title>「生産性1.0からのざっくり見積り」とは</title>
+	
+<script type="text/javascript">
+
+$(function() {
+
+} );
+</script> 
+
+</head>
+<body>
+
+<div id="header">
+	<img id="title_image" src="image/色鉛筆ロゴ.png"/>
+</div>
+
+<div id="filler">&nbsp;</div>
+<div id="filler">&nbsp;</div>
+
+<!-- HITML コンテンツコンテナ -->
+<div id="container">
+
+<div id="left_space" class="side_space"></div>
+<div id="right_space" class="side_space"></div>
+
+<!-- HITML 左側のコンテンツ -->
+<div id="left_contents">
+</div>
+
+<!-- HITML 右側のコンテンツ -->
+<div id="right_contents">
+</div>
+
+<!-- HITML メインコンテンツ -->
+<div id="main_contents">
+
+<!-- メニュー -->
+<div class="nav">
+	<ul class="nl clearFix">
+		<li><a class="current" href="#">はじめに</a></li>
+		<li><a href="NewFile.html">ざっくり見積り</a></li>
+		<li><a href="tips.html">Tips</a></li>
+		<li><a href="technique.html">技術面について</a></li>
+	</ul>
+</div>
+
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+
+<!-- 「「生産性1.0からのざっくり見積り」とは」領域 -->
+<div class="estimate_title">
+	<img src="image/icon_2y_48.png" width="30px"/>
+	<span class="section_title">「生産性1.0からのざっくり見積り」とは</span>
+</div>
+
+<p class="description">
+	　「生産性1.0からのざっくり見積り」では主に係数見積りをおこないます。
+	係数見積りでは計算や統計値によって見積るため、手間をあまりかけずに見積れ、
+	いろいろなパターンを条件を変えて簡単にためすことができます。
+	これをほかの見積り法とあわせて使うことで、見積りの精度を高めることが期待できます。<br>
+	<br>
+	　見積りには KKD 法やファンクションポイント法、WBS積み上げ法、標準値法などの種類がありますが、
+	ひとつの見積り法だけだとかたよった結果になってしまうことがあるため、
+	検算として複数の見積り法をあわせて利用するのが一般的です。<br>
+	　しかし、見積り期間は短いことが多いため、時間の制約で複数の見積りを併用することが難しいことがおおく、
+	ただでさえ曖昧になりやすい見積りが、より神頼みの様相となることもしばしばであるように思えます。<br>
+	<br>
+	それ以外の使い方としてはこんな使い方をしてもいいかもしれません。
+</p>
+
+<ul class="items">
+	<li>開発期間のみ、工数のみなどの断片的な情報しかないようなときにざっくりとあたりをつける</li>
+	<li>少しずつ条件をかえながら、今後規模が増えたときに工数／期間がどうなっていくのかを予測する</li>
+	<li>スケジュールにむりがある場合に、規模や期間のトレードオフのためのシミュレートをする</li>
+	<li>ほかのプロジェクトの条件を入れてみて、適合してるかみてほくそ笑む</li>
+</ul>	
+
+<p class="description">
+	　言うまでもありませんが、たとえ係数見積りが完璧だとしても、プロジェクトに携わるメンバーの技術や知識、
+	マネージメントの円滑性などの質が悪ければ、当然うまく進みません。
+</p>
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+
+<!-- 「使い方」領域 -->
+<div class="estimate_title">
+	<img src="image/icon_6m_48.png" width="30px"/>
+	<span class="section_title">使い方</span>
+</div>
+
+<p class="description">
+	　まずは実際に使ってみながら、どのような機能かを説明していきます。<br>
+	<br>
+	　はじめに、「ざっくり条件指定」欄に見積りのための条件を入力します。項目はいくつかありますが、
+	わかるものだけ入力すればOKです。生産性は必須ですが、こだわりがなければ初期値のままと
+	しておきましょう（サイト名にもあるとおり「<strong>生産性1.0からの</strong>ざっくり見積り」なので）。<br>
+	　ここでは「プログラムサイズ」に 25ks、「開発期間」に 6 ヶ月を入力して「ざっくり見積り」ボタンを
+	押下してみます。
+</p>
+
+<div class="figure_area">
+	<div class="image_block">
+		<img alt="ざっくり条件指定欄への入力" src="image/description/conditionInput.png">
+	</div>
+</div>
+
+<p class="description">
+	　見積りの計算がおわると「基礎数値」欄にその結果が表示されます。<br>
+	　「見積り比較グラフ」とは、上の入力内容で計算した結果と、それとは別の観点で計算した
+	結果（下図の赤破線の内容）をポーラーチャートで比較したものです。
+	「なぜわざわざ別観点での比較がいるの？」と疑問を持つと思いますが、それはこれから説明します。<br>
+</p>
+
+<div class="figure_area">
+	<div class="image_block">
+		<img alt="基礎数値欄の解説" src="image/description/BaseValueArea.png">
+	</div>
+</div>
+
+<p class="description">
+	　グラフを見ると、開発期間は「別観点での見積り値」が２目盛りほど上まわっています。
+	「別観点」とはなんのことでしょうか。その下のリストボックスをみると「プログラムサイズ」が選択されています。
+	これはプログラムサイズのみを起点として見積もったことを示しています（上図の青破線の内容）。
+	このとき、開発期間が 7.7 ヶ月になっていますね。これは「ユーザは 6 ヶ月で見積もって（入力して）いるけれど、
+	プログラムサイズから想定すると 7.7 ヶ月が適当」ということになります。<br>
+	　「ざっくり見積り値」はユーザの入力値を最優先とし、ほかの未入力の項目を補完します。
+	そのため、もともとユーザの入力値が妥当でないときに、それに気づくきっかけになるようにと比較を行なっているのです。
+	つまり、<strong>「別観点での見積り値」と乖離する見積りとなっているならば要注意</strong>ということです。<br>
+	　ちなみに、「見積り結果」表の各値のよこにあるアイコンは、その値がどのように導出されたのかを表します。
+	より詳しい内容は「詳細」リンクでみることができます。<br>
+	<br>
+	　「工程・工数グラフ」欄は基礎数値の「ざっくり見積り値」をもとに、各工程での工数をざっくりと表示します。
+	下段の表はグラフの内容を数値化したものです。
+	これらは JUAS メトリクスの期間比率と工数比率をもとにして計算をしています。<br>
+	　このグラフはスライダにより工程範囲を選択できるため、見積り値を各工程範囲で適用したときにどうなるのかを
+	ざっくりと把握することができます。
+	<br>
+</p>
+
+<div class="figure_area">
+	<div class="image_block">
+		<img alt="工程・工数グラフの解説" src="image/description/EstimateGraph.png">
+	</div>
+</div>
+
+<p class="description">
+	なお、各工程については次のようにあつかっています。
+</p>
+<ul class="items">
+	<li>要件定義　…　要件定義</li>
+	<li>基本設計　…　基本設計</li>
+	<li>実装　…　詳細設計、実装、ユニットテスト</li>
+	<li>結合テスト　…　結合テスト、総合テスト</li>
+</ul>	
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+ 
+</div>
+</div>
+
+</body>
+</html>

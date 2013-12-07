@@ -8,11 +8,75 @@ div.ruler {width:100px; border:1px solid #000; text-align: center; float: left;}
 /* フィラー */
 div.filler {height:15px; clear:both;}
 
+
 /* ボディ */
 body {
 	width: 99%;
 	background: #ffffff url(../image/tileable_wood_texture.png) repeat;
 }
+
+/* -------------------------------------------------------------------- */
+/* - メニュー領域                                                     - */
+/* -------------------------------------------------------------------- */
+/* --- ナビゲーションバー --- */
+div.nav {
+	width: 100%; /* ナビゲーションの幅 */
+	background-color: #F6F6F6; /* ナビゲーションの背景色 */
+	border-bottom: 1px #ffc75c solid; /* 下境界線 */
+	font-size: 80%;
+	margin-bottom: 10px;
+	text-align: center;
+}
+
+/* --- メニューエリア --- */
+div.nav ul.nl {
+	width: 600px; /* メニューの幅(150px × 4 コンテンツ分) */
+	margin: 0 auto; /* センターに配置 */
+	padding: 0;
+	background-color: #F6F6F6; /* メニューの背景色 */
+	border-right: 1px #ffc75c solid; /* メニューの右境界線 */
+	list-style-type: none;
+	text-align: center;
+}
+
+/* --- メニュー項目 --- */
+div.nav ul.nl li {
+	width: 150px; /* 項目の幅 */
+	float: left;
+}
+
+/* --- リンク --- */
+div.nav ul.nl li a {
+	display: block;
+	padding: 4px 2px; /* リンクエリアのパディング（上下、左右） */
+	border-left: 1px #ffc75c solid; /* リンクエリアの左境界線 */
+	text-decoration: none; /* テキストの下線（なし） */
+}
+/* --- ポイント時の設定 --- */
+div.nav ul.nl li a:hover {
+	background-color: #ffffe0; /* ポイント時の背景色 */
+	text-decoration: underline; /* テキストの下線（あり） */
+}
+
+/* --- カレント選択時の設定 --- */
+div.nav ul.nl li a.current {
+	color: black;
+	display: block;
+	padding: 4px 2px; /* リンクエリアのパディング（上下、左右） */
+	border-left: 1px #ffc75c solid; /* リンクエリアの左境界線 */
+	background-color: #ffffc0;
+	text-decoration: none; /* テキストの下線（なし） */
+}
+
+/* --- clearfix --- */
+.clearFix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+.clearFix { min-height: 1px; }
 
 /* -------------------- コンテンツ -------------------- */
 #header	{
@@ -32,7 +96,6 @@ body {
 	width: 100%;
 	display: -webkit-box;  
 	display: -moz-box;
-/*	border: 1px solid red; */
 }
 	#container > div	{
 		min-height: 500px;
@@ -61,7 +124,7 @@ body {
 }
 /* HITML メインコンテンツ */
 #main_contents 	{
-	padding: 20px;
+	padding: 7px 20px 20px 20px;
 	min-width: 850px;
 	max-width: 850px;
 	background: #F6F6F6;
@@ -218,14 +281,6 @@ div#base_value_table_legend_area {
     top: -5px;  
     left: 170px;
 }
-
-/* - 基礎数値算出アイコン凡例 ----------------------------------- */
-div#base_value_table_legend_area {
-	width:260px;
-	position: absolute;
-    top: -5px;  
-    left: 170px;
-}
 fieldset#base_value_table_legend_field {width:260px; padding: 2px;}
 table#base_value_table_legend_table .legend_explain {font-size: 13px; text-align: left;}
 
@@ -269,7 +324,6 @@ div#chart_contents {
 	-webkit-border-radius: 12px;
 	-moz-border-radius: 12px;
 	border-radius: 12px;
-	
 }
 
 /* グラフ枠内のエリア */
@@ -289,6 +343,14 @@ div#base_value_other_angle_item {
     left: 25px;
 }
 	select[name=otherAngleItem] {width: 155px;}
+
+
+/* 基礎数値計算詳細リンク */
+span.space {margin-left: 16px;}
+a#clac_detail {font-size: smaller;}
+a:hover { color: #ff0000; }
+a:visited { color: #000080; }
+a.disabled {color: gray;}
 
 /* -------------------------------------------------------------------- */
 /* - グラフ領域                                                       - */
@@ -428,3 +490,138 @@ table.process_workmonth_table td {text-align: right; padding-right: 5px;}
  	background-image: -moz-linear-gradient(left, #ffffff, #4444ff);
  	background-image: -webkit-gradient(linear, left top, right bottom, from(#ffffff), to(#4444ff)); 
 }
+
+/* -------------------------------------------------------------------- */
+/* - 基礎数値計算方法                                                 - */
+/* -------------------------------------------------------------------- */
+
+div#document_title {height: 20px; width:150px; padding-top: 5px; float: left;}
+div.close_button_area {float: right;}
+button.close_button {height: 30px; font-size: 14px; }
+
+table.calc_way_table {
+	border: 1px solid #b0b0b0;
+	border-spacing: 2px;
+	border-width: 2px;
+	text-align:left;
+	font-size: 14px;
+	background-color: #F6F6F6;
+	
+	width: 640px;
+
+	/* 角を丸くする */
+	-webkit-border-radius: 12px;
+	-moz-border-radius: 12px;
+	border-radius: 12px;
+}
+
+table.calc_way_table th, table.calc_way_table td {
+	border-bottom: 1px solid #CCC;
+	border-right: 1px solid #CCC;
+	padding: 0px 5px 0px 5px;
+	height: 35px;
+}
+
+table.calc_way_table th {
+ 	background-image: -moz-linear-gradient(left, #ffffff, #ffc75c); /* Firefox */
+ 	background-image: -webkit-gradient(linear, left top, right bottom, from(#ffffff), to(#ffc75c)); /* Safari Google Chrome用 */ 
+	font-weight: normal;
+	border-right: 1px solid #CCC;
+}
+
+/* 左列タイトル */
+table.calc_way_table th.table_title {
+	width:120px;
+}
+
+table.calc_way_table th.main_header {
+	width: 200px;
+	text-align: center;
+	height: 20px;
+}
+
+table.calc_way_table th.sub_header {
+	background-color: #F6F6F6;
+ 	background-image: -moz-linear-gradient(left, #ffffff, #ffee99); /* Firefox */
+	text-align: center;
+	height: 20px;
+}
+
+th.num{ width: 35px;}
+th.content{ width: 225px;}
+
+table.calc_way_table div.title  {
+	text-align: left;
+	display:table-cell;
+	clear:both;
+	height: 100%;
+	vertical-align:middle;
+	font-size: 16px;
+}
+
+/* 計算順セル */
+td.calc_num {
+	font-size: large ;
+	text-align: center;
+	text-shadow: #666 1px 1px 1px;
+	-webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px;
+	border-color: #555555;
+ 	background-image: -moz-linear-gradient(left -45deg, #ffffff, #cccccc); /* Firefox */
+ 	background-image: -webkit-gradient(linear, left top, right bottom, from(#ffffff), to(#cccccc)); /* Safari Google Chrome用 */ 
+}
+
+fieldset.reference {
+	font-size: 12px;
+	margin-top: 5px;
+	margin-bottom: 7px;
+ 	background-image: -moz-linear-gradient(left -45deg, #ffffff, #ccccff); /* Firefox */
+ 	background-image: -webkit-gradient(linear, left top, right bottom, from(#ffffff), to(#ccccff)); /* Safari Google Chrome用 */ 
+	box-shadow: #999 2px 2px 2px ;
+}
+
+legend {
+	font-size: 14px;
+	color: blue;
+}
+
+legend:hover, div.reference_small:hover {
+	color: #ff0000; cursor: pointer;
+}
+
+.unvisible {display: none;}
+
+div.reference_small {
+	padding-left: 13px; padding-top: 5px; padding-bottom: 5px;
+	width: 50px;
+	font-size: 14px;
+	color: blue;
+}
+
+body#calc_way_body {width:630px}
+
+/* -------------------------------------------------------------------- */
+/* - 技術面について                                                   - */
+/* -------------------------------------------------------------------- */
+
+#technique_table {margin-left: 20px;}
+#technique_table tr {height: 30px;}
+#technique_table th {width: 170px;}
+#technique_table td {width: 550px; padding-top: 7px; padding-bottom: 7px;}
+
+/* -------------------------------------------------------------------- */
+/* - 使い方                                                   - */
+/* -------------------------------------------------------------------- */
+
+div.figure_area {padding-bottom: 10px;}
+div.figure_area span{padding-left: 23px; text-shadow: #888 2px 2px 2px;}
+div.image_block {
+	text-align: center;
+	width:91%;
+	margin-left:auto; margin-right:auto;
+}
+div.figure_area img {
+	padding: 10px 10px 10px 10px;
+	border: 1px solid black;
+	box-shadow: #999 2px 2px 2px ;
+}
+ul.items {margin-left: 30px;}

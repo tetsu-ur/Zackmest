@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<!-- jQuery と jQuery UI -->
+	<link rel="stylesheet" href="lib/themes/base/jquery.ui.all.css" />
+	<script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="lib/ui/jquery-ui.js"></script>
+
+	<script type="text/javascript" src="../skscroll.js"></script>
+	<link href="css/zackmest.css" rel="stylesheet">
+	<title>技術面について</title>
+	
+<script type="text/javascript">
+
+$(function() {
+
+} );
+</script> 
+
+</head>
+<body>
+
+<div id="header">
+	<img id="title_image" src="image/色鉛筆ロゴ.png"/>
+</div>
+
+<div id="filler">&nbsp;</div>
+<div id="filler">&nbsp;</div>
+
+<!-- HITML コンテンツコンテナ -->
+<div id="container">
+
+<div id="left_space" class="side_space"></div>
+<div id="right_space" class="side_space"></div>
+
+<!-- HITML 左側のコンテンツ -->
+<div id="left_contents">
+</div>
+
+<!-- HITML 右側のコンテンツ -->
+<div id="right_contents">
+</div>
+
+<!-- HITML メインコンテンツ -->
+<div id="main_contents">
+
+<!-- メニュー -->
+<div class="nav">
+	<ul class="nl clearFix">
+		<li><a href="Description.html">使い方</a></li>
+		<li><a href="NewFile.html">ざっくり見積り</a></li>
+		<li><a href="tips.html">Tips</a></li>
+		<li><a class="current" href="#">技術面について</a></li>
+	</ul>
+</div>
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+
+<!-- 「技術面について」領域 -->
+<div class="estimate_title">
+	<img src="image/icon_4b_48_spana.png" width="30px"/>
+	<span class="section_title">技術面について</span>
+</div>
+
+<p class="description">
+	　「生産性1.0からのざっくり見積り」を作成するにあたって、いくつかの実験的な試みをしました。
+	いろいろな事情で仕事ではつかえないツールやライブラリ、興味がある技術などを盛り込んだ集大成です。
+	初めてのものが多く、調べながら、つまずきながら作ることになり、新たな挑戦は大変なものだなとしみじみ。
+	とはいえ、Web 畑の人にとってはあたりまえにつかうものなのでしょう。<br />
+	　ここでは今回の「初めての試み」をリストにしました。
+</p>
+
+<!-- 「技術面について」エリア -->
+<div id="technique_table_area">
+	<table id="technique_table" class="lookgood_table">
+		<tr>
+			<th>Ubuntu 12.04 LTS</th>
+			<td>
+				　今までは Windows での開発がメインでしたが、今回はすべて Ubuntu 上で作成しました。
+				環境は Eclipse 3.7.2 + Tomcat v7.0 とし、ほかにも仕様書の作成には LibreOffice、設計に astah Community など、
+				Linux で使えるもののみとなっています。<br />
+				　LibreOffice は Microsoft Office と違う独自な操作があって使いにくかったものの、
+				とりあえずひと通りのプロセスを Ubuntu だけでこなすのは成功しました。
+			</td>
+		</tr>
+		<tr>
+			<th>Struts2</th>
+			<td>
+				　少し前に携わったプロジェクトでは Struts2 を使用して Web アプリケーションを開発するということだったので、
+				勉強のためにつかってみようと決めました。が、そのプロジェクトからは実装工程前に撤収することになったため
+				結局はつかわずじまいに・・・。<br />
+				　日本語の資料があまりなくて調べるのに苦労しました。
+			</td>
+		</tr>
+		<tr>
+			<th>google-gson</th>
+			<td>
+				　工程工数グラフは JSON 形式のデータをもとに描画してるため、Java で生成したデータオブジェクトを
+				JSON 形式に変換する必要があり、手軽に使えそうなこれを選択しました。<br />
+				　データ構造がそこそこ複雑になったので、変換は大変かなと心配しましたが、使い方がシンプルでスグにつかえました。
+			</td>
+		</tr>
+		<tr>
+			<th>HTML5</th>
+			<td>
+				　「HTML5 が流行りらしい」という理由でつかってみようとしたものの、結局 HTML5 が何なのか不明。
+				とりあえず canvas とボックスレイアウトがそれっぽいのかと理解しました。<br />
+				　工程工数グラフで canvas を初めてつかいましたが、けっこうよさげにできました。
+				ただ、文字の描画が荒いことや細い線が使えない点が残念です。
+			</td>
+		</tr>
+		<tr>
+			<th>JUnit4</th>
+			<td>
+				　Java 開発ではおなじみのユニットテストツールですが、4 ははじめてつかいました。
+				ただ調べる手間を惜しんだため、あらたな機能としては assertThat くらいしかつかってません。<br />
+				　JUnit Helper や Quick JUnit とあわせてつかったところ、とても便利でした。
+				「やっぱりユニットテストは必要だ、いきなり結合しようとするやつって何なの？」と思うくらい。
+			</td>
+		</tr>
+		<tr>
+			<th>jquery</th>
+			<td>
+				　みんな大好き jquery。いまでは大流行りなのにつかう機会がありませんでした。
+				セレクタやイベントハンドラがおどろくほどつかいやすくなっていてストレスなく作れました。JavaScript 部分は。
+			</td>
+		</tr>
+		<tr>
+			<th>jquery UI</th>
+			<td>
+				　HTMLのプリミティブなコントロール部品以外をつかう場合に限らず、ボタンなども見栄えがよくなるので使用しました。
+				ここではスライダやスピナ、ボタンでつかっています。双方向スライダをサポートしてて助かりました。
+				とくに UI への執着がなければ jquery UI だけで間に合いそうです。
+			</td>
+		</tr>
+		<tr>
+			<th>Jquery Canvas Chart</th>
+			<td>
+				　ポーラーチャートを表示するために使用しました。「俺WEB」氏作のライブラリです。<br />
+				指定できるパラメータがおおく、こまかい調整が簡単にできてつかいやすかったです。<br />
+				<a href="http://oreweb.toypark.in/jquery.canvasChart/" target="_blank">
+					http://oreweb.toypark.in/jquery.canvasChart/
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<th>Uniform</th>
+			<td>
+				　HTMLのプリミティブなコントロール部品の見栄えをよくしてくれるライブラリです。<br />
+				ラジオボタンやリストボックスが味気なかったので使用しました。が、あまりうまくつかえてないですね。<br />
+				<a href="http://uniformjs.com/" target="_blank">
+					http://uniformjs.com/
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<th>GIMP</th>
+			<td>
+				　タイトルロゴをつくるために使用しました。オープンソースでありながら高度な機能があって重宝します。
+				ただ自分がペイントソフトくらいしかつかってこなかったので、機能に振りまわされてつかいこなせませんでした。<br />
+				　このソフトだけで色々できそう、だけど自身のデザインセンスのなさが絶望的・・。
+			</td>
+		</tr>
+		<tr>
+			<th>GitHub</th>
+			<td>
+				　Git は CVS と SVN を嫌悪しているという某L氏が開発したということで、興味本位でつかうことを決定。
+				Linux のような大規模なプログラムを扱うわけじゃなく、ひとりでつかうだけなので用途に合ってないが・・・。<br />
+				　ろくに調べずにつかっていたのでリポジトリを壊しそうになったり、古いソースでローカルデータを上書き
+				してしまったり、冷や汗をかくことも何度か・・・。<br />
+				　SVN などより多機能なので、使うときには要注意。
+			</td>
+		</tr>
+		<tr>
+			<th>アイコン</th>
+			<td>
+				　はじめはアイコンも自作しようと考えていたものの、デザインセンスのなさを受け入れて、
+				素材サイトで提供されているものをつかうことにしました。<br />
+				　「ICON HOI HOI」さんのアイコンは種類も多く、色ちがい、サイズちがいバリエーションもあり、使いやすかったです。
+				絵柄も適度にソフトでワンポイントにつかうにはもってこいです。<br />
+				<a href="http://iconhoihoi.oops.jp/index.html" target="_blank">
+					http://iconhoihoi.oops.jp/index.html
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<th>背景画像</th>
+			<td>
+				　あたたかみがある印象が出せるように、ナチュラル系素材をさがしていて、最終的に木目調におさまりました。<br />
+				<a href="http://subtlepatterns.com/" target="_blank">
+					http://subtlepatterns.com/
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<th>タイトルロゴ画像</th>
+			<td>
+				　やわらかめな画像にするか、数学的なものにするか悩んだ末、背景にあわせたやわらか系のタイトルロゴとしました。<br />
+				　元画像は「YannGar Photo in Lausanne」によって提供されたもので、それを GIMP で編集しています。
+				GIMP のつかい方がわからなくて大いに苦労しました。<br />
+				<a href="http://free-images.gatag.net/2012/04/09/000000.html" target="_blank">
+					http://free-images.gatag.net/2012/04/09/000000.html
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<th>多重スクロール</th>
+			<td>
+				　某ゲームの 13 多重スクロールや 0.5 ドットスクロールなどの変わったスクロールが好きだったので、
+				たまたま見つけた sakusaku のサイトを参考にしてみました。<br />
+				　FireFox だとサクサクとスクロールするのに、 Chromium だとなぜかカクカク・・・。
+			</td>
+		</tr>
+	</table>
+</div>
+
+<!-- レイアウト調整 -->
+<div class="filler">&nbsp;</div>
+ 
+</div>
+</div>
+
+</body>
+</html>

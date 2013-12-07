@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+	<!-- jQuery と jQuery UI -->
+	<link rel="stylesheet" href="lib/themes/base/jquery.ui.all.css" />
+	<script type="text/javascript" src="lib/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="lib/ui/jquery-ui.js"></script>
+
+	<link rel="stylesheet" href="lib/pixelmatrix-uniform/themes/default/css/uniform.default.css" media="screen" />
+	<script src="lib/pixelmatrix-uniform/jquery.uniform.js"></script>
+
+	<script type="text/javascript" src="../skscroll.js"></script>
+	<link href="css/zackmest.css" rel="stylesheet">
+	<title>Insert title here</title>
+	
+<script type="text/javascript">
+
+$(function() {
+
+	// 「閉じる」ボタン 
+	$( ".close_button" ).button({
+		icons: {primary: " ui-icon-closethick"},
+		text: true
+	}).click(function(){ /* クリック時の動作 */ });
+
+	// リンククリックで親ウィンドウからリンクを開く(こっちのウィンドウは狭いので) 
+	$("a").click(function(event){
+		event.preventDefault();
+		window.opener.openURL(this.href);
+	});
+
+	 // 参考詳細(FIELDSET) をクリックしたら開いてない状態の参考(DIV)を表示する 
+	 $("fieldset").click(function(){
+		 
+		var contentDiv = $(this).next("div");
+		 if (contentDiv.hasClass("unvisible")) {
+			 contentDiv.removeClass("unvisible");
+		 }else {
+			 contentDiv.addClass("unvisible");
+		 }
+		$(this).prev("div").removeClass("unvisible");;
+		$(this).addClass("unvisible");
+	 });
+	 
+	 // 開いてない状態の参考(DIV) をクリックしたら参考詳細(FIELDSET)を表示する 
+	 $("div.reference_small").click(function(){
+		 
+			var contentDiv = $(this).next("fieldset");
+			 if (contentDiv.hasClass("unvisible")) {
+				 contentDiv.removeClass("unvisible");
+			 }else {
+				 contentDiv.addClass("unvisible");
+			 }
+			 $(this).addClass("unvisible");
+	 });
+
+	 $("html").dblclick(function(){
+		 window.close();
+	 });
+
+	 $(".close_button").click(function(){
+		 window.close();
+	 });
+
+});
+</script> 
+
+</head>
+<body id="calc_way_body">
+
+<div>
+	<div id="document_title">
+		<span class="title">基礎数値計算方法</span>
+	</div>
+
+	<div class="close_button_area">
+		<button class="close_button">閉じる</button>
+	</div>
+
+	<!-- レイアウト調整 -->
+	<div class="filler">&nbsp;</div>
+
+	<table class="calc_way_table">
+		<tr>
+			<th rowspan="2" class="table_title" ><div class="title"><img src="image/icon_4b_24.png"><span>計算項目</span></div></th>
+			<th colspan="2" class="main_header">ざっくり見積り値</th>
+			<th colspan="2" class="main_header">別観点での見積り値</th>
+		</tr>
+		<tr>
+			<th class="sub_header num">順番</th>
+			<th class="sub_header content">計算内容</th>
+			<th class="sub_header num">順番</th>
+			<th class="sub_header content">計算内容</th>
+		</tr>
+		<tr>
+			<th>プログラムサイズ</th>
+			<td class="calc_num" >1</td><td>入力値</td>
+			<td class="calc_num" >7</td><td>「工数」÷「生産性」</td>
+		</tr>
+		<tr>
+			<th>ファンクション<br/>ポイント</th>
+			<td class="calc_num" >2</td>
+			<td>JUAL「FPあたりの人月」から逆算
+				<div class="reference_small">⇒参考</div>
+				<fieldset class="reference unvisible" >
+					<legend>⇒参考</legend>
+					<div id="ref_z_2">
+						ソフトウェアメトリックス調査2012<br>
+						「FP生産性（パッケージ開発以外） P.124 図表 6-141a」<br>
+						日本情報システム・ユーザー協会
+					</div>
+				</fieldset>
+			</td>
+			<td class="calc_num" >6</td>
+			<td>入力値</td>
+		</tr>
+		<tr>
+			<th>生産性</th>
+			<td class="calc_num" >6</td><td>入力値</td>
+			<td class="calc_num" >3</td><td>JUASメトリクス「KLOC生産性」</td>
+		</tr>
+		<tr>
+			<th>開発期間</th>
+			<td class="calc_num" >5</td><td>入力値</td>
+			<td class="calc_num" >4</td><td>「標準工期」を使用</td>
+		</tr>
+		<tr>
+			<th>工数</th>
+			<td class="calc_num" >7</td><td>「開発期間」からJUASメトリクスで逆算</td>
+			<td class="calc_num" >5</td><td>JUAL「FPあたりの人月」から算出</td>
+		</tr>
+		<tr>
+			<th>標準工期</th>
+			<td class="calc_num" >4</td><td>「開発期間」を使用</td>
+			<td class="calc_num" >2</td><td>「工数」からJUASメトリクスで算出</td>
+		</tr>
+		<tr>
+			<th>最短開発期間</th>
+			<td class="calc_num" >3</td>
+			<td>「KLOC」からSLIMで算出
+				<div class="reference_small">⇒参考</div>
+				<fieldset class="reference unvisible" >
+					<legend>⇒参考</legend>
+					<div id="ref_z_7">
+						<a href="http://monoist.atmarkit.co.jp/mn/articles/1203/14/news005.html">
+							山浦恒央の“くみこみ”な話（41）：ついに登場！ 究極の見積もり技法（その4：最短開発期間の算出）
+						</a><br>
+						アイティメディア株式会社
+					</div>
+				</fieldset>
+			</td>
+			<td class="calc_num" >1</td>
+			<td>「KLOC」からSLIMで算出
+				<div class="reference_small">⇒参考</div>
+				<fieldset class="reference unvisible" >
+					<legend>⇒参考</legend>
+						<div id="ref_s_7">
+						<a href="http://monoist.atmarkit.co.jp/mn/articles/1203/14/news005.html">
+							山浦恒央の“くみこみ”な話（41）：ついに登場！ 究極の見積もり技法（その4：最短開発期間の算出）
+						</a><br>
+						アイティメディア株式会社
+					</div>
+				</fieldset>
+			</td>
+		</tr>
+	</table>
+
+	<!-- レイアウト調整 -->
+	<div class="filler">&nbsp;</div>
+	
+	<div class="close_button_area">
+		<button class="close_button">閉じる</button>
+	</div>
+	
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

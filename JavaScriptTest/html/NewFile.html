@@ -34,15 +34,19 @@ window.onload = function() {
 	drawEstimateCanvas(estimateDataJson.estimateValue[0]);
 }
 
+function openURL(url) {
+	window.open(url,"_blank");
+}
+
 $(function() {
 
-	// 「ざっくり見積り」ボタン
+	// 「ざっくり見積り」ボタン 
 	$( "#submit_estimate" ).button({
 		icons: {primary: " ui-icon-calculator"},
 		text: true
 	}).click(function(){ /* クリック時の動作 */ });
 
-	// 「リセット」ボタン
+	// 「リセット」ボタン 
 	$( "#reset_button" ).button({
 		icons: {primary: " ui-icon-trash"},
 		text: true
@@ -145,6 +149,17 @@ $(function() {
 	 $( "#man_hour" ).spinner({ step: 5, numberFormat: "n"});
 	 
 	 $("select, input[type=radio]").uniform();
+	 
+	 $("a#clac_detail").click(function(){
+		 var width  = 670;
+		 var height = 440;
+		 var y_pos = "top=" + ((window.screen.height)/2-(height/2));
+		 var x_pos = "left=" + ($(document).width())/2;
+		 window.open("calc_detail.html", "mywindow2", 
+				 "width=" + width + ", " + "height=" + height + 
+				 ", menubar=no, toolbar=no, scrollbars=yes, location=no, status=no, directories = no, titlebar=no,"
+				 + y_pos + ", " + x_pos);
+	 });
 } );
 </script> 
 
@@ -174,6 +189,16 @@ $(function() {
 
 <!-- HITML メインコンテンツ -->
 <div id="main_contents">
+
+<!-- メニュー -->
+<div class="nav">
+	<ul class="nl clearFix">
+		<li><a href="Description.html">はじめに</a></li>
+		<li><a class="current" href="#">ざっくり見積り</a></li>
+		<li><a href="tips.html">Tips</a></li>
+		<li><a href="technique.html">技術面について</a></li>
+	</ul>
+</div>
 
 <!-- Web定規 -->
 <!-- 
@@ -325,7 +350,10 @@ $(function() {
 
 	<!-- 基礎数値表示領域：右ペイン -->
 	<div id="base_value_right_pane">
-		<div class="table_title"><span class="title">見積り結果</span></div>
+		<div class="table_title">
+			<span class="title">見積り結果</span><span class="space">&nbsp;</span>
+			<a id="clac_detail" href="javascript:void(0)">詳細</a>
+		</div>
 
 		<!-- レイアウト調整 -->
 		<div class="filler">&nbsp;</div>
